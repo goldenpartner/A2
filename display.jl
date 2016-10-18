@@ -34,8 +34,8 @@ function defult_mini()
         "r1" "b1" "s1" "g1" "k1";]
 end
 
-Type="S"
-matrix=temp_standard
+Type="M"
+matrix=temp_mini
 function display()
   if (Type=="S")
     temp=1
@@ -68,15 +68,35 @@ function display()
       println("    9   8   7   6   5   4   3   2   1")
       println("\n\n Red:person with the first move\n Green:person with the second move")
   elseif(Type=="M")
+    temp=1
       for i =1:5
-        println("+---+---+---+---+---+")
-        print("|")
+        println("  +---+---+---+---+---+")
+        print(temp," |")
+        temp_=1
         for j=0:4
-          print(" ",matrix[i,5-j][1]," |")
+          if (matrix[i,5-j][end]=='1')
+            print(" ")
+            if(string(matrix[i,5-j][1])!="k")
+              print_with_color(:red,string(matrix[i,5-j][1]))
+            else
+              print_with_color(:yellow,string(matrix[i,5-j][1]))
+            end
+            print(" |")
+          else
+            print(" ")
+            if(string(matrix[i,5-j][1])!="k")
+              print_with_color(:green,string(matrix[i,5-j][1]))
+            else
+              print_with_color(:yellow,string(matrix[i,5-j][1]))
+            end
+            print(" |")
+          end
         end
         print("\n")
       end
-      println("+---+---+---+---+---+")
+      println("  +---+---+---+---+---+")
+      println("    5   4   3   2   1")
+      println("\n\n Red:person with the first move\n Green:person with the second move")
   else
     println("error!")
   end
