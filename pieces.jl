@@ -41,10 +41,10 @@ module rook
             target = current_pos + move*(i-x)
             if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
               continue
-            else if board[(target[1]-1)*l + target[2]] == " "
+            elseif board[(target[1]-1)*l + target[2]] == " "
               push!(valid, move_x*(i-x))
               push!(valid, 0)
-            else if board[(target[1]-1)*l + target[2]] == '1'
+            elseif board[(target[1]-1)*l + target[2]] == '1'
               push!(valid, move_x*(i-x))
               push!(valid, 0)
               break
@@ -55,10 +55,10 @@ module rook
             target = current_pos + move*(x-i)
             if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
               continue
-            else if board[(target[1]-1)*l + target[2]] == " "
+            elseif board[(target[1]-1)*l + target[2]] == " "
               push!(valid, move_x*(x-i))
               push!(valid, 0)
-            else if board[(target[1]-1)*l + target[2]] == '1'
+            elseif board[(target[1]-1)*l + target[2]] == '1'
               push!(valid, move_x*()x-i)
               push!(valid, 0)
               break
@@ -71,10 +71,10 @@ module rook
               target = current_pos + move*(i-y)
               if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
                 continue
-              else if board[(target[1]-1)*l + target[2]] == " "
+              elseif board[(target[1]-1)*l + target[2]] == " "
                 push!(valid, 0)
                 push!(valid, move_y*(i-y))
-              else if board[(target[1]-1)*l + target[2]] == '1'
+              elseif board[(target[1]-1)*l + target[2]] == '1'
                 push!(valid, 0)
                 push!(valid, move_y*(i-y))
                 break
@@ -85,10 +85,10 @@ module rook
               target = current_pos + move*(y-i)
               if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
                 continue
-              else if board[(target[1]-1)*l + target[2]] == " "
+              elseif board[(target[1]-1)*l + target[2]] == " "
                 push!(valid, 0)
                 push!(valid, move_y*(y-i))
-              else if board[(target[1]-1)*l + target[2]] == '1'
+              elseif board[(target[1]-1)*l + target[2]] == '1'
                 push!(valid, 0)
                 push!(valid, move_y*(y-i))
                 break
@@ -117,10 +117,10 @@ module Rook
         target = current_pos + move*i
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
           break
-        else if board[(target[1]-1)*l + target[2]] == " "
+        elseif board[(target[1]-1)*l + target[2]] == " "
           push!(valid, move_x*(i-x))
           push!(valid, 0)
-        else if board[(target[1]-1)*l + target[2]] == '1'
+        elseif board[(target[1]-1)*l + target[2]] == '1'
           push!(valid, move_x*(i-x))
           push!(valid, 0)
           break
@@ -160,10 +160,10 @@ module bishop
         target = current_pos + move*i
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
           continue
-        else if board[(target[1]-1)*l + target[2]] == " "
+        elseif board[(target[1]-1)*l + target[2]] == " "
           push!(valid, move_x*(i-x))
           push!(valid, 0)
-        else if board[(target[1]-1)*l + target[2]] == '1'
+        elseif board[(target[1]-1)*l + target[2]] == '1'
           push!(valid, move_x*(i-x))
           push!(valid, 0)
           break
@@ -189,10 +189,10 @@ module Bishop
         target = current_pos + move*i
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
           break
-        else if board[(target[1]-1)*l + target[2]] == " "
+        elseif board[(target[1]-1)*l + target[2]] == " "
           push!(valid, move_x*(i-x))
           push!(valid, 0)
-        else if board[(target[1]-1)*l + target[2]] == '1'
+        elseif board[(target[1]-1)*l + target[2]] == '1'
           push!(valid, move_x*(i-x))
           push!(valid, 0)
           break
