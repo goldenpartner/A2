@@ -65,7 +65,8 @@ function display()
         print("\n")
       end
       println("  +---+---+---+---+---+---+---+---+---+")
-      println("    1   2   3   4   5   6   7   8   9")
+      println("    9   8   7   6   5   4   3   2   1")
+      println("\n\n Red:person with the first move\n Green:person with the second move")
   elseif(Type=="M")
       for i =1:5
         println("+---+---+---+---+---+")
