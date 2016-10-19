@@ -34,8 +34,8 @@ function defult_mini()
         "r1" "b1" "s1" "g1" "k1";]
 end
 
-Type="M"
-matrix=temp_mini
+Type="S"
+matrix=temp_standard
 function display()
   if (Type=="S")
     temp=1
@@ -47,7 +47,7 @@ function display()
           if (matrix[i,9-j][end]=='1')
             print(" ")
             if(string(matrix[i,9-j][1])!="k")
-              print_with_color(:red,string(matrix[i,9-j][1]))
+              print_with_color(:black,string(matrix[i,9-j][1]))
             else
               print_with_color(:yellow,string(matrix[i,9-j][1]))
             end
@@ -55,7 +55,7 @@ function display()
           else
             print(" ")
             if(string(matrix[i,9-j][1])!="k")
-              print_with_color(:green,string(matrix[i,9-j][1]))
+              print_with_color(:white,string(matrix[i,9-j][1]))
             else
               print_with_color(:yellow,string(matrix[i,9-j][1]))
             end
@@ -66,7 +66,7 @@ function display()
       end
       println("  +---+---+---+---+---+---+---+---+---+")
       println("    9   8   7   6   5   4   3   2   1")
-      println("\n\n Red:person with the first move\n Green:person with the second move")
+      println("\n\n Black:person with the first move\n White:person with the second move")
   elseif(Type=="M")
     temp=1
       for i =1:5
@@ -77,7 +77,7 @@ function display()
           if (matrix[i,5-j][end]=='1')
             print(" ")
             if(string(matrix[i,5-j][1])!="k")
-              print_with_color(:red,string(matrix[i,5-j][1]))
+              print_with_color(:black,string(matrix[i,5-j][1]))
             else
               print_with_color(:yellow,string(matrix[i,5-j][1]))
             end
@@ -85,7 +85,7 @@ function display()
           else
             print(" ")
             if(string(matrix[i,5-j][1])!="k")
-              print_with_color(:green,string(matrix[i,5-j][1]))
+              print_with_color(:white,string(matrix[i,5-j][1]))
             else
               print_with_color(:yellow,string(matrix[i,5-j][1]))
             end
@@ -96,7 +96,7 @@ function display()
       end
       println("  +---+---+---+---+---+")
       println("    5   4   3   2   1")
-      println("\n\n Red:person with the first move\n Green:person with the second move")
+      println("\n\nBlack:person with the first move\n White:person with the second move")
   else
     println("error!")
   end
