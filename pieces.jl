@@ -1,5 +1,5 @@
 module king
-  allMove = [[1 1]; [1 0]; [0 1]; [-1 -1]; [-1 0]; [0 -1]; [1 -1]; [-1 1]]
+  allMove = [1 1 1 0 0 1 -1 -1 -1 0 0 -1 1 -1 -1 1]
   name = "k"
   value = 100
   function getmoves(board, x, y)
@@ -24,7 +24,7 @@ module king
 end
 
 module rook
-  allmove = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+  allmove = [1 0 -1 0 0 1 0 -1]
   name = "r"
   value = 9
   function getmoves(board, x, y)
@@ -102,7 +102,7 @@ module rook
 end
 
 module Rook
-  allmove = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]
+  allmove = [1 0 -1 0 0 1 0 -1 1 1 1 -1 -1 1 -1 -1]
   name = "R"
   value = 13
   function getmoves(board, x, y)
@@ -145,7 +145,7 @@ module Rook
 end
 
 module bishop
-  allmove = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
+  allmove = [1 1 1 -1 -1 1 -1 -1]
   name = "b"
   value = 8
   function getmoves(board, x, y)
@@ -174,7 +174,7 @@ module bishop
 end
 
 module Bishop
-  allmove = [[1, 1], [1, -1], [-1, 1], [-1, -1], [0, 1], [0, -1], [1, 0], [-1, 0]]
+  allmove = [1 1 1 -1 -1 1 -1 -1 0 1 0 -1 1 0 -1 0]
   name = "B"
   value = 12
   function getmoves(board, x, y)
@@ -216,7 +216,7 @@ module Bishop
 end
 
 module Gold_General
-  allmove = [[1,1], [1,0], [1,-1], [0,1], [0,-1], [-1, 0]]
+  allmove = [1 1 1 0 1 -1 0 1 0 -1 -1 0]
   name = "g"
   value = 5
   function getmoves(board, x, y)
@@ -241,7 +241,7 @@ module Gold_General
 end
 
 module silver_General
-  allmove = [[1,1], [1,0], [1,-1], [-1, -1], [-1, 1]]
+  allmove = [1 1 1 0 1 -1 -1 -1 -1 1]
   name = "s"
   value = 5
   function getmoves(board, x, y)
@@ -266,7 +266,7 @@ module silver_General
 end
 
 module Silver_General
-  allmove = [[1,1], [1,0], [1,-1], [0,1], [0,-1], [-1, 0]]
+  allmove = [1 1 1 0 1 -1 0 1 0 -1 -1 0]
   name = "S"
   value = 5
   function getmoves(board, x, y)
@@ -291,7 +291,7 @@ module Silver_General
 end
 
 module knight
-  allmove = [[2, -1], [2, 1]]
+  allmove = [2 -1 2 1]
   name = "n"
   value = 3
   function getmoves(board, x, y)
@@ -316,7 +316,7 @@ module knight
 end
 
 module Knight
-  allmove = [[1,1], [1,0], [1,-1], [0,1], [0,-1], [-1, 0]]
+  allmove = [1 1 1 0 1 -1 0 1 0 -1 -1 0]
   name = "N"
   value = 5
   function getmoves(board, x, y)
@@ -341,7 +341,7 @@ module Knight
 end
 
 module lance
-  allmove = [[1, 0]]
+  allmove = [1 0]
   name = "l"
   value = 3
   function getmoves(board, x, y)
@@ -366,7 +366,7 @@ module lance
 end
 
 module Lance
-  allmove = [[1,1], [1,0], [1,-1], [0,1], [0,-1], [-1, 0]]
+  allmove = [1 1 1 0 1 -1 0 1 0 -1 -1 0]
   name = "L"
   value = 5
   function getmoves(board, x, y)
@@ -391,7 +391,7 @@ module Lance
 end
 
 module pawn
-  allmove = [[1, 0]]
+  allmove = [1 0]
   name = "p"
   value = 1
   function getmoves(board, x, y)
@@ -414,7 +414,7 @@ module pawn
 end
 
 module Pawn
-  allmove = [[1,1], [1,0], [1,-1], [0,1], [0,-1], [-1, 0]]
+  allmove = [1 1 1 0 1 -1 0 1 0 -1 -1 0]
   name = "P"
   value = 5
   function getmoves(board, x, y)
