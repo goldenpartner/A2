@@ -35,9 +35,9 @@ function defult_mini()
 end
 
 Type="S"
-matrix=temp_standard
 function display()
   if (Type=="S")
+    matrix=temp_standard
     temp=1
       for i=1:9
         println("  +---+---+---+---+---+---+---+---+---+")
@@ -68,6 +68,7 @@ function display()
       println("    9   8   7   6   5   4   3   2   1")
       println("\n\n Black:person with the first move\n White:person with the second move")
   elseif(Type=="M")
+    matrix=temp_mini
     temp=1
       for i =1:5
         println("  +---+---+---+---+---+")
