@@ -1,31 +1,20 @@
-standard=["l0" "n0" "s0" "g0" "k0" "g0" "s0" "n0" "l0";
-          " " "b0" " " " " " " " " " " "r0" " ";
-          "p0" "p0" "p0" "p0" "p0" "p0" "p0" "p0" "p0";
-          " " " " " " " " " " " " " " " " " ";
-          " " " " " " " " " " " " " " " " " ";
-          " " " " " " " " " " " " " " " " " ";
-          "p1" "p1" "p1" "p1" "p1" "p1" "p1" "p1" "p1";
-          " " "r1" " " " " " " " " " " "b1" " ";
-          "l1" "n1" "s1" "g1" "k1" "g1" "s1" "n1" "l1";]
-
-mini=["k0" "g0" "s0" "b0" "r0";
-      "p0" " " " " " " " ";
-      " " " " " " " " " ";
-      " " " " " " " " "p1";
-      "r1" "b1" "s1" "g1" "k1";]
-function move_user_move(filename,xsource,ysource,xtarget,ytarget,promote)
-  if(standard[xsource][ysource] == " ")
-    return false
-  if(standard[xtarget][ytarget] != " ")
-    died_token = standard[xtarget][ytarget]
-    standard[xtarget][ytarget] = standard[xsource][ysource]
-    standard[xsource][ysource] = " "
-    return died_token
-  else
-    standard[xtarget][ytarget] = standard[xsource][ysource]
-    standard[xsource][ysource] = " "
-  end
-  if(ytarget <= 3)
-    standard[xtarget][ytarget] = uppercase(standard[xtarget][ytarget])
-  end
+using SQLite
+DB = SQLite.DB(ARGS[1])
+move_number = length(SQLite.execute!(DB,"SELECT move_number FROM moves")) + 1
+sourcex = ARGS[2]
+sourcey = ARGS[3]
+targetx = ARGS[4]
+targety = ARGS[5]
+if length(ARGS) >= 6
+  promote = ARGS[6]
+else
+  promote = "NULL"
 end
+SQLite.query(DB,"INSERT INTO moves VALUES(\"$move_number\",
+                                          \"move\",
+                                          \"$sourcex\",
+                                          \"$sourcey\",
+                                          \"$targetx\",
+                                          \"$targety\",
+                                          \"$promote\",
+                                          \"\")")
