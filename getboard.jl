@@ -1,6 +1,7 @@
 using SQLite
 
 function getCurrentBoard(DB)
+  DB = SQLite.DB(DB)
   died_token = Array{String}(0)
   board_type = SQLite.query(DB,"SELECT value FROM meta WHERE key = \"type\";")[1].values[1]
   if board_type == "standard"
