@@ -42,7 +42,7 @@ function getCurrentBoard(DB)
         board[targetx,targety] = uppercase(board[targetx,targety])
       end
     elseif move_type == "resign"
-      return board,arr
+      return board,died_arr
     elseif move_type == "drop"
       board[targetx,targety] = option * turn
       deleteat!(died_token,findin(died_token,board[targetx,targety]))
