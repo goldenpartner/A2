@@ -57,8 +57,8 @@ SQLite.execute!(DB,insert_query)
 
 
 #set table - "moves"
-create_table_moves ="create table moves(move_number varchar(255),move_type varchar(255),
-                                        sourcex varchar(255), sourcey varchar(255),
-                                        targetx varchar(255), targety varchar(255),
-                                        option varchar(255), i_am_cheating varchar(255))"
+create_table_moves ="create table moves(move_number INTEGER,move_type TEXT,
+                                        sourcex INTEGER, sourcey INTEGER,
+                                        targetx INTEGER, targety INTEGER,
+                                        option TEXT, i_am_cheating NONE)"
 SQLite.execute!(DB,create_table_moves)
