@@ -1,104 +1,41 @@
-temp_standard=["l0" "n0" "s0" "g0" "k0" "g0" "s0" "n0" "l0";
-                " " "b0" " " " " " " " " " " "r0" " ";
-                "p0" "p0" "p0" "p0" "p0" "p0" "p0" "p0" "p0";
-                " " " " " " " " " " " " " " " " " ";
-                " " " " " " " " " " " " " " " " " ";
-                " " " " " " " " " " " " " " " " " ";
-                "p1" "p1" "p1" "p1" "p1" "p1" "p1" "p1" "p1";
-                " " "r1" " " " " " " " " " " "b1" " ";
-                "l1" "n1" "s1" "g1" "k1" "g1" "s1" "n1" "l1";]
-
-temp_mini=["k0" "g0" "s0" "b0" "r0";
-      "p0" " " " " " " " ";
-      " " " " " " " " " ";
-      " " " " " " " " "p1";
-      "r1" "b1" "s1" "g1" "k1";]
-
-function defult_standard()
-  standard=["l0" "n0" "s0" "g0" "k0" "g0" "s0" "n0" "l0";
-            " " "b0" " " " " " " " " " " "r0" " ";
-            "p0" "p0" "p0" "p0" "p0" "p0" "p0" "p0" "p0";
-            " " " " " " " " " " " " " " " " " ";
-            " " " " " " " " " " " " " " " " " ";
-            " " " " " " " " " " " " " " " " " ";
-            "p1" "p1" "p1" "p1" "p1" "p1" "p1" "p1" "p1";
-            " " "r1" " " " " " " " " " " "b1" " ";
-            "l1" "n1" "s1" "g1" "k1" "g1" "s1" "n1" "l1";]
+include("getboard.jl")
+board,died_token = getCurrentBoard()
+x,y = size(board)
+print("   ")
+for i = 0 : x - 1
+  print_with_color(:cyan,"   ",string('a' + i))
 end
-
-function defult_mini()
-  mini=["k0" "g0" "s0" "b0" "r0";
-        "p0" " " " " " " " ";
-        " " " " " " " " " ";
-        " " " " " " " " "p1";
-        "r1" "b1" "s1" "g1" "k1";]
-end
-
-Type="S"
-function display()
-  if (Type=="S")
-    matrix=temp_standard
-    temp=1
-      for i=1:9
-        println("  +---+---+---+---+---+---+---+---+---+")
-        print(temp," |")
-        temp+=1
-        for j=0:8
-          if (matrix[i,9-j][end]=='1')
-            print(" ")
-            if(string(matrix[i,9-j][1])!="k")
-              print_with_color(:black,string(matrix[i,9-j][1]))
-            else
-              print_with_color(:yellow,string(matrix[i,9-j][1]))
-            end
-            print(" |")
-          else
-            print(" ")
-            if(string(matrix[i,9-j][1])!="k")
-              print_with_color(:white,string(matrix[i,9-j][1]))
-            else
-              print_with_color(:yellow,string(matrix[i,9-j][1]))
-            end
-            print(" |")
-          end
-        end
-        print("\n")
-      end
-      println("  +---+---+---+---+---+---+---+---+---+")
-      println("    9   8   7   6   5   4   3   2   1")
-      println("\n\n Black:person with the first move\n White:person with the second move")
-  elseif(Type=="M")
-    matrix=temp_mini
-    temp=1
-      for i =1:5
-        println("  +---+---+---+---+---+")
-        print(temp," |")
-        temp_=1
-        for j=0:4
-          if (matrix[i,5-j][end]=='1')
-            print(" ")
-            if(string(matrix[i,5-j][1])!="k")
-              print_with_color(:black,string(matrix[i,5-j][1]))
-            else
-              print_with_color(:yellow,string(matrix[i,5-j][1]))
-            end
-            print(" |")
-          else
-            print(" ")
-            if(string(matrix[i,5-j][1])!="k")
-              print_with_color(:white,string(matrix[i,5-j][1]))
-            else
-              print_with_color(:yellow,string(matrix[i,5-j][1]))
-            end
-            print(" |")
-          end
-        end
-        print("\n")
-      end
-      println("  +---+---+---+---+---+")
-      println("    5   4   3   2   1")
-      println("\n\nBlack:person with the first move\n White:person with the second move")
+println()
+for i = 1: 2*y + 1
+  if i % 2 == 1
+    print("    +")
   else
-    println("error!")
+    print_with_color(:cyan," ",string(Int(i/2)))
+    print("  |")
   end
+  for j = 1:x
+    if i % 2 == 1
+      print("---+")
+    else
+      print(" ")
+      if length(board[j,Int(i/2)]) < 2
+        print(" ")
+      else
+        if board[j,Int(i/2)][2] == '0'
+          print_with_color(:bold,string(board[j,Int(i/2)][1]))
+        else
+          print_with_color(:black,string(board[j,Int(i/2)][1]))
+        end
+      end
+      print(" |")
+    end
+  end
+  if i % 2 == 0
+    print_with_color(:cyan," ",string(Int(i/2)))
+  end
+  println()
+end
+print("   ")
+for i = 0 : x - 1
+  print_with_color(:cyan,"   ",string('a' + i))
 end
