@@ -24,7 +24,7 @@ module king
 end
 
 module rook
-  allmove = [1 0 -1 0 0 1 0 -1]
+  allMove = [1 0 -1 0 0 1 0 -1]
   name = "r"
   value = 9
   function getmoves(board, x, y)
@@ -102,7 +102,7 @@ module rook
 end
 
 module Rook
-  allmove = [1 0 -1 0 0 1 0 -1 1 1 1 -1 -1 1 -1 -1]
+  allMove = [1 0 -1 0 0 1 0 -1 1 1 1 -1 -1 1 -1 -1]
   name = "R"
   value = 13
   function getmoves(board, x, y)
@@ -145,7 +145,7 @@ module Rook
 end
 
 module bishop
-  allmove = [1 1 1 -1 -1 1 -1 -1]
+  allMove = [1 1 1 -1 -1 1 -1 -1]
   name = "b"
   value = 8
   function getmoves(board, x, y)
@@ -174,7 +174,7 @@ module bishop
 end
 
 module Bishop
-  allmove = [1 1 1 -1 -1 1 -1 -1 0 1 0 -1 1 0 -1 0]
+  allMove = [1 1 1 -1 -1 1 -1 -1 0 1 0 -1 1 0 -1 0]
   name = "B"
   value = 12
   function getmoves(board, x, y)
@@ -216,10 +216,16 @@ module Bishop
 end
 
 module Gold_General
-  allmove = [1 1 1 0 1 -1 0 1 0 -1 -1 0]
+  allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
+  allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
   name = "g"
   value = 5
-  function getmoves(board, x, y)
+  function getmoves(board, x, y, color)
+    if collor == 1
+      allmMove = allmove_b
+    else
+      allMove = allmove_w
+    end
     current_pos = [x, y]
     l = convert(Int, sqrt(length(board)))
     valid = []
@@ -241,10 +247,16 @@ module Gold_General
 end
 
 module silver_General
-  allmove = [1 1 1 0 1 -1 -1 -1 -1 1]
+  allmove_w = [1 1 1 0 1 -1 -1 -1 -1 1]
+  allmove_b = [-1 0 -1 -1 -1 1 1 -1 1 1]
   name = "s"
   value = 5
-  function getmoves(board, x, y)
+  function getmoves(board, x, y, color)
+    if collor == 1
+      allmMove = allmove_b
+    else
+      allMove = allmove_w
+    end
     current_pos = [x, y]
     l = convert(Int, sqrt(length(board)))
     valid = []
@@ -266,10 +278,16 @@ module silver_General
 end
 
 module Silver_General
-  allmove = [1 1 1 0 1 -1 0 1 0 -1 -1 0]
-  name = "S"
+  allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
+  allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
+  name = "g"
   value = 5
-  function getmoves(board, x, y)
+  function getmoves(board, x, y, color)
+    if collor == 1
+      allmMove = allmove_b
+    else
+      allMove = allmove_w
+    end
     current_pos = [x, y]
     l = convert(Int, sqrt(length(board)))
     valid = []
@@ -291,10 +309,16 @@ module Silver_General
 end
 
 module knight
-  allmove = [2 -1 2 1]
+  allmove_w = [2 -1 2 1]
+  allmove_b = [-2 1 -2 -1]
   name = "n"
   value = 3
   function getmoves(board, x, y)
+    if collor == 1
+      allmMove = allmove_b
+    else
+      allMove = allmove_w
+    end
     current_pos = [x, y]
     l = convert(Int, sqrt(length(board)))
     valid = []
@@ -316,10 +340,16 @@ module knight
 end
 
 module Knight
-  allmove = [1 1 1 0 1 -1 0 1 0 -1 -1 0]
-  name = "N"
+  allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
+  allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
+  name = "g"
   value = 5
-  function getmoves(board, x, y)
+  function getmoves(board, x, y, color)
+    if collor == 1
+      allmMove = allmove_b
+    else
+      allMove = allmove_w
+    end
     current_pos = [x, y]
     l = convert(Int, sqrt(length(board)))
     valid = []
@@ -341,10 +371,16 @@ module Knight
 end
 
 module lance
-  allmove = [1 0]
+  allmove_w = [1 0]
+  allmove_b = [-1 0]
   name = "l"
   value = 3
   function getmoves(board, x, y)
+    if collor == 1
+      allmMove = allmove_b
+    else
+      allMove = allmove_w
+    end
     current_pos = [x, y]
     l = convert(Int, sqrt(length(board)))
     valid = []
@@ -366,10 +402,16 @@ module lance
 end
 
 module Lance
-  allmove = [1 1 1 0 1 -1 0 1 0 -1 -1 0]
-  name = "L"
+  allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
+  allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
+  name = "g"
   value = 5
-  function getmoves(board, x, y)
+  function getmoves(board, x, y, color)
+    if collor == 1
+      allmMove = allmove_b
+    else
+      allMove = allmove_w
+    end
     current_pos = [x, y]
     l = convert(Int, sqrt(length(board)))
     valid = []
@@ -391,10 +433,16 @@ module Lance
 end
 
 module pawn
-  allmove = [1 0]
+  allmove_w = [1 0]
+  allmove_b = [-1 0]
   name = "p"
   value = 1
   function getmoves(board, x, y)
+    if collor == 1
+      allmMove = allmove_b
+    else
+      allMove = allmove_w
+    end
     current_pos = [x, y]
     l = convert(Int, sqrt(length(board)))
     valid = []
@@ -414,10 +462,16 @@ module pawn
 end
 
 module Pawn
-  allmove = [1 1 1 0 1 -1 0 1 0 -1 -1 0]
-  name = "P"
+  allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
+  allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
+  name = "g"
   value = 5
-  function getmoves(board, x, y)
+  function getmoves(board, x, y, color)
+    if collor == 1
+      allmMove = allmove_b
+    else
+      allMove = allmove_w
+    end
     current_pos = [x, y]
     l = convert(Int, sqrt(length(board)))
     valid = []
