@@ -1,5 +1,5 @@
 include("getboard.jl")
-board,died_token = getCurrentBoard()
+board,died_token = getCurrentBoard(ARGS[1])
 x,y = size(board)
 print("   ")
 for i = 0 : x - 1
