@@ -44,8 +44,20 @@ function getCurrentBoard(DB)
     elseif move_type == "resign"
       return board,died_arr
     elseif move_type == "drop"
-      board[targetx,targety] = option * turn
-      deleteat!(died_token,findin(died_token,board[targetx,targety]))
+      index = 0
+      #find index
+      for k = 1:length(died_arr)
+        if died_arr[k] == option * turn
+          index = k
+          break
+        end
+      end
+      if index != 0
+        board[targetx,targety] = option * turn
+        deleteat!(died_token,index)
+      else
+        board[targetx,targety] = option * turn
+      end
     end
   end
   return board,died_token
