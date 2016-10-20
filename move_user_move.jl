@@ -10,11 +10,11 @@ if length(ARGS) >= 6
 else
   promote = "NULL"
 end
-SQLite.query(DB,"INSERT INTO moves VALUES(\"$move_number\",
+SQLite.query(DB,"INSERT INTO moves VALUES($move_number,
                                           \"move\",
-                                          \"$sourcex\",
-                                          \"$sourcey\",
-                                          \"$targetx\",
-                                          \"$targety\",
-                                          \"$promote\",
+                                          $sourcex,
+                                          $sourcey,
+                                          $targetx,
+                                          $targety,
+                                          $promote,
                                           \"\")")
