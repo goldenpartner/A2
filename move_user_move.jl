@@ -17,4 +17,4 @@ SQLite.query(DB,"INSERT INTO moves VALUES($move_number,
                                           $targetx,
                                           $targety,
                                           $promote,
-                                          \"\")")
+                                          NULL)")
