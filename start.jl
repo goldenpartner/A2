@@ -29,7 +29,7 @@ end
 DB = SQLite.DB(ARGS[1])
 
 #set table - "meta"
-create_table_meta = "create table meta(key varchar(255),value varchar(255))"
+create_table_meta = "create table meta(key TEXT,value TEXT)"
 SQLite.execute!(DB,create_table_meta)
 
 #initialize table - "meta"
@@ -60,5 +60,5 @@ SQLite.execute!(DB,insert_query)
 create_table_moves ="create table moves(move_number INTEGER,move_type TEXT,
                                         sourcex INTEGER, sourcey INTEGER,
                                         targetx INTEGER, targety INTEGER,
-                                        option TEXT, i_am_cheating NONE)"
+                                        option NONE, i_am_cheating NONE)"
 SQLite.execute!(DB,create_table_moves)
