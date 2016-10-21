@@ -1,485 +1,456 @@
-module king
-  allMove = [1 1 1 0 0 1 -1 -1 -1 0 0 -1 1 -1 -1 1]
-  name = "k"
-  value = 100
-  function getmoves(board, x, y)
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for i = 1:2:16
-      move = [allMove[i], allMove[i+1]]
-      target = current_pos + move
-      if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        continue
-      elseif board[(target[1]-1)*l + target[2]] == " "
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      elseif board[(target[1]-1)*l + target[2]][2] == '1'
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      end
-    end
-    return valid
-  end
-end
-
-module rook
-  allMove = [1 0 -1 0 0 1 0 -1]
-  name = "r"
-  value = 9
-  function getmoves(board, x, y)
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for j = 1:2:8
-      move = [allMove[j], allMove[j+1]]
-      move_x = move[1]
-      move_y = move[2]
-      if move_y == 0
-        if move_x == 1
-          for i = x:l
-            target = current_pos + move*(i-x)
-            if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
-              continue
-            elseif board[(target[1]-1)*l + target[2]] == " "
-              push!(valid, move_x*(i-x))
-              push!(valid, 0)
-            elseif board[(target[1]-1)*l + target[2]] == '1'
-              push!(valid, move_x*(i-x))
-              push!(valid, 0)
-              break
-            end
-          end
-        elseif move_x == -1
-          for i = x:-1:1
-            target = current_pos + move*(x-i)
-            if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
-              continue
-            elseif board[(target[1]-1)*l + target[2]] == " "
-              push!(valid, move_x*(x-i))
-              push!(valid, 0)
-            elseif board[(target[1]-1)*l + target[2]] == '1'
-              push!(valid, move_x*()x-i)
-              push!(valid, 0)
-              break
-            end
-           end
-          end
-        else
-          if move_y == 1
-            for i = y:l
-              target = current_pos + move*(i-y)
-              if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
-                continue
-              elseif board[(target[1]-1)*l + target[2]] == " "
-                push!(valid, 0)
-                push!(valid, move_y*(i-y))
-              elseif board[(target[1]-1)*l + target[2]] == '1'
-                push!(valid, 0)
-                push!(valid, move_y*(i-y))
-                break
-              end
-            end
-          elseif move_y == -1
-            for i = y:-1:1
-              target = current_pos + move*(y-i)
-              if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
-                continue
-              elseif board[(target[1]-1)*l + target[2]] == " "
-                push!(valid, 0)
-                push!(valid, move_y*(y-i))
-              elseif board[(target[1]-1)*l + target[2]] == '1'
-                push!(valid, 0)
-                push!(valid, move_y*(y-i))
-                break
-              end
-             end
-          end
-        end
-    end
-    return valid
-  end
-end
-
-module Rook
-  allMove = [1 0 -1 0 0 1 0 -1 1 1 1 -1 -1 1 -1 -1]
-  name = "R"
-  value = 13
-  function getmoves(board, x, y)
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for j = 1:2:8
-      move = [allMove[j], allMove[j+1]]
-      move_x = move[1]
-      move_y = move[2]
-      for i = 1:l
-        target = current_pos + move*i
-        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-          break
-        elseif board[(target[1]-1)*l + target[2]] == " "
-          push!(valid, move_x*(i-x))
-          push!(valid, 0)
-        elseif board[(target[1]-1)*l + target[2]] == '1'
-          push!(valid, move_x*(i-x))
-          push!(valid, 0)
-          break
-        end
-      end
-    end
-    for i = 9:2:16
-      move = [allMove[i], allMove[i+1]]
-      target = current_pos + move
-      if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        continue
-      elseif board[(target[1]-1)*l + target[2]] == " "
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      elseif board[(target[1]-1)*l + target[2]][2] == '1'
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      end
-    end
-    return valid
-  end
-end
-
-module bishop
-  allMove = [1 1 1 -1 -1 1 -1 -1]
-  name = "b"
-  value = 8
-  function getmoves(board, x, y)
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for j = 1:2:8
-      move = [allMove[j], allMove[j+1]]
-      move_x = move[1]
-      move_y = move[2]
-      for i = 1:l
-        target = current_pos + move*i
+module MCTS
+  module king
+    allMove = [1 1 1 0 0 1 -1 -1 -1 0 0 -1 1 -1 -1 1]
+    name = "k"
+    value = 100
+    function getmoves(board, x, y, color)
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for i = 1:2:16
+        move = [allMove[i], allMove[i+1]]
+        target = current_pos + move
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
           continue
         elseif board[(target[1]-1)*l + target[2]] == " "
-          push!(valid, move_x*(i-x))
-          push!(valid, 0)
-        elseif board[(target[1]-1)*l + target[2]] == '1'
-          push!(valid, move_x*(i-x))
-          push!(valid, 0)
-          break
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        elseif board[(target[1]-1)*l + target[2]][2] == '1'
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
         end
       end
-    end
-  end
-end
-
-module Bishop
-  allMove = [1 1 1 -1 -1 1 -1 -1 0 1 0 -1 1 0 -1 0]
-  name = "B"
-  value = 12
-  function getmoves(board, x, y)
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for j = 1:2:8
-      move = [allMove[j], allMove[j+1]]
-      move_x = move[1]
-      move_y = move[2]
-      for i = 1:l
-        target = current_pos + move*i
-        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-          break
-        elseif board[(target[1]-1)*l + target[2]] == " "
-          push!(valid, move_x*(i-x))
-          push!(valid, 0)
-        elseif board[(target[1]-1)*l + target[2]] == '1'
-          push!(valid, move_x*(i-x))
-          push!(valid, 0)
-          break
-        end
-      end
-    end
-    for i = 9:2:16
-      move = [allMove[i], allMove[i+1]]
-      target = current_pos + move
-      if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        continue
-      elseif board[(target[1]-1)*l + target[2]] == " "
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      elseif board[(target[1]-1)*l + target[2]][2] == '1'
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      end
-    end
-  end
-end
-
-module Gold_General
-  allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
-  allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
-  name = "g"
-  value = 5
-  function getmoves(board, x, y, color)
-    if collor == 1
-      allmMove = allmove_b
-    else
-      allMove = allmove_w
-    end
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for i = 1:2:16
-      move = [allMove[i], allMove[i+1]]
-      target = current_pos + move
-      if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        continue
-      elseif board[(target[1]-1)*l + target[2]] == " "
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      elseif board[(target[1]-1)*l + target[2]][2] == '1'
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      end
-    end
-    return valid
-  end
-end
-
-module silver_General
-  allmove_w = [1 1 1 0 1 -1 -1 -1 -1 1]
-  allmove_b = [-1 0 -1 -1 -1 1 1 -1 1 1]
-  name = "s"
-  value = 5
-  function getmoves(board, x, y, color)
-    if collor == 1
-      allmMove = allmove_b
-    else
-      allMove = allmove_w
-    end
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for i = 1:2:16
-      move = [allMove[i], allMove[i+1]]
-      target = current_pos + move
-      if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        continue
-      elseif board[(target[1]-1)*l + target[2]] == " "
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      elseif board[(target[1]-1)*l + target[2]][2] == '1'
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      end
-    end
-    return valid
-  end
-end
-
-module Silver_General
-  allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
-  allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
-  name = "g"
-  value = 5
-  function getmoves(board, x, y, color)
-    if collor == 1
-      allmMove = allmove_b
-    else
-      allMove = allmove_w
-    end
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for i = 1:2:16
-      move = [allMove[i], allMove[i+1]]
-      target = current_pos + move
-      if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        continue
-      elseif board[(target[1]-1)*l + target[2]] == " "
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      elseif board[(target[1]-1)*l + target[2]][2] == '1'
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      end
-    end
-    return valid
-  end
-end
-
-module knight
-  allmove_w = [2 -1 2 1]
-  allmove_b = [-2 1 -2 -1]
-  name = "n"
-  value = 3
-  function getmoves(board, x, y)
-    if collor == 1
-      allmMove = allmove_b
-    else
-      allMove = allmove_w
-    end
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for i = 1:2:16
-      move = [allMove[i], allMove[i+1]]
-      target = current_pos + move
-      if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        continue
-      elseif board[(target[1]-1)*l + target[2]] == " "
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      elseif board[(target[1]-1)*l + target[2]][2] == '1'
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      end
-    end
-    return valid
-  end
-end
-
-module Knight
-  allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
-  allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
-  name = "g"
-  value = 5
-  function getmoves(board, x, y, color)
-    if collor == 1
-      allmMove = allmove_b
-    else
-      allMove = allmove_w
-    end
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for i = 1:2:16
-      move = [allMove[i], allMove[i+1]]
-      target = current_pos + move
-      if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        continue
-      elseif board[(target[1]-1)*l + target[2]] == " "
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      elseif board[(target[1]-1)*l + target[2]][2] == '1'
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      end
-    end
-    return valid
-  end
-end
-
-module lance
-  allmove_w = [1 0]
-  allmove_b = [-1 0]
-  name = "l"
-  value = 3
-  function getmoves(board, x, y)
-    if collor == 1
-      allmMove = allmove_b
-    else
-      allMove = allmove_w
-    end
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for i = 1:2:16
-      move = [allMove[i], allMove[i+1]]
-      target = current_pos + move
-      if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        continue
-      elseif board[(target[1]-1)*l + target[2]] == " "
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      elseif board[(target[1]-1)*l + target[2]][2] == '1'
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      end
-    end
-    return valid
-  end
-end
-
-module Lance
-  allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
-  allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
-  name = "g"
-  value = 5
-  function getmoves(board, x, y, color)
-    if collor == 1
-      allmMove = allmove_b
-    else
-      allMove = allmove_w
-    end
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for i = 1:2:16
-      move = [allMove[i], allMove[i+1]]
-      target = current_pos + move
-      if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        continue
-      elseif board[(target[1]-1)*l + target[2]] == " "
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      elseif board[(target[1]-1)*l + target[2]][2] == '1'
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
-      end
-    end
-    return valid
-  end
-end
-
-module pawn
-  allmove_w = [1 0]
-  allmove_b = [-1 0]
-  name = "p"
-  value = 1
-  function getmoves(board, x, y)
-    if collor == 1
-      allmMove = allmove_b
-    else
-      allMove = allmove_w
-    end
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    move = [1, 0]
-    target = current_pos + move
-    if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
       return valid
-    elseif board[(target[1]-1)*l + target[2]] == " "
-      push!(valid, allMove[i])
-      push!(valid, allMove[i+1])
-    elseif board[(target[1]-1)*l + target[2]][2] == '1'
-      push!(valid, allMove[i])
-      push!(valid, allMove[i+1])
     end
-    return valid
   end
-end
 
-module Pawn
-  allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
-  allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
-  name = "g"
-  value = 5
-  function getmoves(board, x, y, color)
-    if collor == 1
-      allmMove = allmove_b
-    else
-      allMove = allmove_w
+  module rook
+    allMove = [1 0 -1 0 0 1 0 -1]
+    name = "r"
+    value = 9
+    function getmoves(board, x, y, color)
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for j = 1:2:8
+        move = [allMove[j], allMove[j+1]]
+        move_x = move[1]
+        move_y = move[2]
+        if move_y == 0
+          if move_x == 1
+            for i = x:l
+              target = current_pos + move*(i-x)
+              if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
+                continue
+              elseif board[(target[1]-1)*l + target[2]] == " "
+                push!(valid, move_x*(i-x))
+                push!(valid, 0)
+              elseif board[(target[1]-1)*l + target[2]] == '1'
+                push!(valid, move_x*(i-x))
+                push!(valid, 0)
+                break
+              end
+            end
+          elseif move_x == -1
+            for i = x:-1:1
+              target = current_pos + move*(x-i)
+              if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
+                continue
+              elseif board[(target[1]-1)*l + target[2]] == " "
+                push!(valid, move_x*(x-i))
+                push!(valid, 0)
+              elseif board[(target[1]-1)*l + target[2]] == '1'
+                push!(valid, move_x*()x-i)
+                push!(valid, 0)
+                break
+              end
+             end
+            end
+          else
+            if move_y == 1
+              for i = y:l
+                target = current_pos + move*(i-y)
+                if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
+                  continue
+                elseif board[(target[1]-1)*l + target[2]] == " "
+                  push!(valid, 0)
+                  push!(valid, move_y*(i-y))
+                elseif board[(target[1]-1)*l + target[2]] == '1'
+                  push!(valid, 0)
+                  push!(valid, move_y*(i-y))
+                  break
+                end
+              end
+            elseif move_y == -1
+              for i = y:-1:1
+                target = current_pos + move*(y-i)
+                if ((target[1]-1)*l + target[2] > l) || ((target[1]-1)*l + target[2] < 1)
+                  continue
+                elseif board[(target[1]-1)*l + target[2]] == " "
+                  push!(valid, 0)
+                  push!(valid, move_y*(y-i))
+                elseif board[(target[1]-1)*l + target[2]] == '1'
+                  push!(valid, 0)
+                  push!(valid, move_y*(y-i))
+                  break
+                end
+               end
+            end
+          end
+      end
+      return valid
     end
-    current_pos = [x, y]
-    l = convert(Int, sqrt(length(board)))
-    valid = []
-    for i = 1:2:16
-      move = [allMove[i], allMove[i+1]]
+  end
+
+  module Rook
+    allMove = [1 0 -1 0 0 1 0 -1 1 1 1 -1 -1 1 -1 -1]
+    name = "R"
+    value = 13
+    function getmoves(board, x, y, color)
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for j = 1:2:8
+        move = [allMove[j], allMove[j+1]]
+        move_x = move[1]
+        move_y = move[2]
+        for i = 1:l
+          target = current_pos + move*i
+          if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+            break
+          elseif board[(target[1]-1)*l + target[2]] == " "
+            push!(valid, move_x*(i-x))
+            push!(valid, 0)
+          elseif board[(target[1]-1)*l + target[2]] == '1'
+            push!(valid, move_x*(i-x))
+            push!(valid, 0)
+            break
+          end
+        end
+      end
+      for i = 9:2:16
+        move = [allMove[i], allMove[i+1]]
+        target = current_pos + move
+        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+          continue
+        elseif board[(target[1]-1)*l + target[2]] == " "
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        elseif board[(target[1]-1)*l + target[2]][2] == '1'
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        end
+      end
+      return valid
+    end
+  end
+
+  module bishop
+    allMove = [1 1 1 -1 -1 1 -1 -1]
+    name = "b"
+    value = 8
+    function getmoves(board, x, y, color)
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for j = 1:2:8
+        move = [allMove[j], allMove[j+1]]
+        move_x = move[1]
+        move_y = move[2]
+        for i = 1:l
+          target = current_pos + move*i
+          if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+            continue
+          elseif board[(target[1]-1)*l + target[2]] == " "
+            push!(valid, move_x*(i-x))
+            push!(valid, 0)
+          elseif board[(target[1]-1)*l + target[2]] == '1'
+            push!(valid, move_x*(i-x))
+            push!(valid, 0)
+            break
+          end
+        end
+      end
+    end
+  end
+
+  module Bishop
+    allMove = [1 1 1 -1 -1 1 -1 -1 0 1 0 -1 1 0 -1 0]
+    name = "B"
+    value = 12
+    function getmoves(board, x, y, color)
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for j = 1:2:8
+        move = [allMove[j], allMove[j+1]]
+        move_x = move[1]
+        move_y = move[2]
+        for i = 1:l
+          target = current_pos + move*i
+          if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+            break
+          elseif board[(target[1]-1)*l + target[2]] == " "
+            push!(valid, move_x*(i-x))
+            push!(valid, 0)
+          elseif board[(target[1]-1)*l + target[2]] == '1'
+            push!(valid, move_x*(i-x))
+            push!(valid, 0)
+            break
+          end
+        end
+      end
+      for i = 9:2:16
+        move = [allMove[i], allMove[i+1]]
+        target = current_pos + move
+        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+          continue
+        elseif board[(target[1]-1)*l + target[2]] == " "
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        elseif board[(target[1]-1)*l + target[2]][2] == '1'
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        end
+      end
+    end
+  end
+
+  module Gold_General
+    allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
+    allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
+    name = "g"
+    value = 5
+    function getmoves(board, x, y, color)
+      if color == 1
+        allMove = allmove_b
+      else
+        allMove = allmove_w
+      end
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for i = 1:2:16
+        move = [allMove[i], allMove[i+1]]
+        target = current_pos + move
+        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+          continue
+        elseif board[(target[1]-1)*l + target[2]] == " "
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        elseif board[(target[1]-1)*l + target[2]][2] == '1'
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        end
+      end
+      return valid
+    end
+  end
+
+  module silver_General
+    allmove_w = [1 1 1 0 1 -1 -1 -1 -1 1]
+    allmove_b = [-1 0 -1 -1 -1 1 1 -1 1 1]
+    name = "s"
+    value = 5
+    function getmoves(board, x, y, color)
+      if color == 1
+        allMove = allmove_b
+      else
+        allMove = allmove_w
+      end
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for i = 1:2:16
+        move = [allMove[i], allMove[i+1]]
+        target = current_pos + move
+        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+          continue
+        elseif board[(target[1]-1)*l + target[2]] == " "
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        elseif board[(target[1]-1)*l + target[2]][2] == '1'
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        end
+      end
+      return valid
+    end
+  end
+
+  module Silver_General
+    allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
+    allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
+    name = "g"
+    value = 5
+    function getmoves(board, x, y, color)
+      if color == 1
+        allMove = allmove_b
+      else
+        allMove = allmove_w
+      end
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for i = 1:2:16
+        move = [allMove[i], allMove[i+1]]
+        target = current_pos + move
+        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+          continue
+        elseif board[(target[1]-1)*l + target[2]] == " "
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        elseif board[(target[1]-1)*l + target[2]][2] == '1'
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        end
+      end
+      return valid
+    end
+  end
+
+  module knight
+    allmove_w = [2 -1 2 1]
+    allmove_b = [-2 1 -2 -1]
+    name = "n"
+    value = 3
+    function getmoves(board, x, y, color)
+      if color == 1
+        allMove = allmove_b
+      else
+        allMove = allmove_w
+      end
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for i = 1:2:16
+        move = [allMove[i], allMove[i+1]]
+        target = current_pos + move
+        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+          continue
+        elseif board[(target[1]-1)*l + target[2]] == " "
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        elseif board[(target[1]-1)*l + target[2]][2] == '1'
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        end
+      end
+      return valid
+    end
+  end
+
+  module Knight
+    allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
+    allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
+    name = "g"
+    value = 5
+    function getmoves(board, x, y, color)
+      if color == 1
+        allMove = allmove_b
+      else
+        allMove = allmove_w
+      end
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for i = 1:2:16
+        move = [allMove[i], allMove[i+1]]
+        target = current_pos + move
+        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+          continue
+        elseif board[(target[1]-1)*l + target[2]] == " "
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        elseif board[(target[1]-1)*l + target[2]][2] == '1'
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        end
+      end
+      return valid
+    end
+  end
+
+  module lance
+    allmove_w = [1 0]
+    allmove_b = [-1 0]
+    name = "l"
+    value = 3
+    function getmoves(board, x, y, color)
+      if color == 1
+        allMove = allmove_b
+      else
+        allMove = allmove_w
+      end
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for i = 1:2:16
+        move = [allMove[i], allMove[i+1]]
+        target = current_pos + move
+        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+          continue
+        elseif board[(target[1]-1)*l + target[2]] == " "
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        elseif board[(target[1]-1)*l + target[2]][2] == '1'
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        end
+      end
+      return valid
+    end
+  end
+
+  module Lance
+    allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
+    allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
+    name = "g"
+    value = 5
+    function getmoves(board, x, y, color)
+      if color == 1
+        allMove = allmove_b
+      else
+        allMove = allmove_w
+      end
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for i = 1:2:16
+        move = [allMove[i], allMove[i+1]]
+        target = current_pos + move
+        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+          continue
+        elseif board[(target[1]-1)*l + target[2]] == " "
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        elseif board[(target[1]-1)*l + target[2]][2] == '1'
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        end
+      end
+      return valid
+    end
+  end
+
+  module pawn
+    allmove_w = [1 0]
+    allmove_b = [-1 0]
+    name = "p"
+    value = 1
+    function getmoves(board, x, y, color)
+      if color == 1
+        allMove = allmove_b
+      else
+        allMove = allmove_w
+      end
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      move = [1, 0]
       target = current_pos + move
       if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        continue
+        return valid
       elseif board[(target[1]-1)*l + target[2]] == " "
         push!(valid, allMove[i])
         push!(valid, allMove[i+1])
@@ -487,16 +458,46 @@ module Pawn
         push!(valid, allMove[i])
         push!(valid, allMove[i+1])
       end
+      return valid
     end
-    return valid
   end
-end
-function getValue(DB, sql)
-  temp = string(SQLite.query(DB, sql)[1][1])
-  value = temp[10:findfirst(temp, ')')-1]
-  return value
-end
-module MCTS
+
+  module Pawn
+    allmove_w = [1 0 -1 0 0 1 0 -1 1 1 1 -1]
+    allmove_b = [-1 0 -1 -1 -1 1 0 1 0 -1 1 0]
+    name = "g"
+    value = 5
+    function getmoves(board, x, y, color)
+      if color == 1
+        allMove = allmove_b
+      else
+        allMove = allmove_w
+      end
+      current_pos = [x, y]
+      l = convert(Int, sqrt(length(board)))
+      valid = []
+      for i = 1:2:16
+        move = [allMove[i], allMove[i+1]]
+        target = current_pos + move
+        if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
+          continue
+        elseif board[(target[1]-1)*l + target[2]] == " "
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        elseif board[(target[1]-1)*l + target[2]][2] == '1'
+          push!(valid, allMove[i])
+          push!(valid, allMove[i+1])
+        end
+      end
+      return valid
+    end
+  end
+  function getValue(DB, sql)
+    temp = string(SQLite.query(DB, sql)[1][1])
+    value = temp[10:findfirst(temp, ')')-1]
+    return value
+  end
+
   function count_self(table, color, table_type)
     count = 0
     if table_type == 'S'
@@ -513,11 +514,11 @@ module MCTS
     end
     return count
   end
-  function count_opp(table, color, table)
+  function count_opp(table, color, table_type)
     if color == '1'
-      return count_self(table, '0', table)
+      return count_self(table, '0', table_type)
     else
-      return count_self(table, '1', table)
+      return count_self(table, '1', table_type)
     end
   end
 
@@ -624,49 +625,49 @@ module MCTS
     return weight
   end
 
-  function getAllMoves(char, board, x, y)
+  function getAllMoves(char, board, x, y, color)
     if isupper(char[1])
-      moves = getMovePro(char, board, x, y)
+      moves = getMovePro(char, board, x, y, color)
     else
-      moves = getMoveStd(char, board, x, y)
+      moves = getMoveStd(char, board, x, y, color)
     end
     return moves
   end
-  function getMoveStd(char, board, x, y)
+  function getMoveStd(char, board, x, y, color)
     name = char[1]
     if name == 'p'
-      moves = pawn.getmoves(board, x, y)
+      moves = pawn.getmoves(board, x, y, color)
     elseif name == 'b'
-      moves = bishop.getmoves(board, x, y)
+      moves = bishop.getmoves(board, x, y, color)
     elseif name == 'g'
-      moves = gold_general.getmoves(board, x, y)
+      moves = gold_general.getmoves(board, x, y, color)
     elseif name == 'k'
-      moves = king.getmoves(board, x, y)
+      moves = king.getmoves(board, x, y, color)
     elseif name == 'l'
-      moves = lance.getmoves(board, x, y)
+      moves = lance.getmoves(board, x, y, color)
     elseif name == 'n'
-      moves = knight.getmoves(board, x, y)
+      moves = knight.getmoves(board, x, y,color)
     elseif name == 'r'
-      moves = rook.getmoves(board, x, y)
+      moves = rook.getmoves(board, x, y,color)
     elseif name == 's'
-      moves = silver_General.getmoves(board, x, y)
+      moves = silver_General.getmoves(board, x, y, color)
     end
     return moves
   end
-  function getMovePro(char, board, x, y)
+  function getMovePro(char, board, x, y,color)
     name = char[1]
     if name == 'p'
-      moves = Pawn.getmoves(board, x, y)
+      moves = Pawn.getmoves(board, x, y,color)
     elseif name == 'B'
-      moves = Bishop.getmoves(board, x, y)
+      moves = Bishop.getmoves(board, x, y,color)
     elseif name == 'L'
-      moves = Lance.getmoves(board, x, y)
+      moves = Lance.getmoves(board, x, y,color)
     elseif name == 'N'
-      moves = Knight.getmoves(board, x, y)
+      moves = Knight.getmoves(board, x, y,color)
     elseif name == 'R'
-      moves = Rook.getmoves(board, x, y)
+      moves = Rook.getmoves(board, x, y,color)
     elseif name == 'S'
-      moves = Silver_General.getmoves(board, x, y)
+      moves = Silver_General.getmoves(board, x, y,color)
     end
     return moves
   end
