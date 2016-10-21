@@ -1,7 +1,15 @@
 using SQLite
-function move_user_drop(filname, piece, xtarget, ytarget)
-  DB = SQLite.DB(filename)
-  sql = "insert into move(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
-  sql += " values (drop, -1, -1, $(xtarget), $(ytarget), piece, NULL)"
-  SQLite.execute!(DB, sql)
-end
+DB = SQLite.DB(ARGS[1])
+#get current move_id
+move_number = length(SQLite.query(DB,"SELECT move_number FROM moves")) + 1
+token = ARGS[2]
+targetx = ARGS[3]
+targety = ARGS[4]
+SQLite.query(DB,"INSERT INTO moves VALUES($move_number,
+                                          \"drop\",
+                                          NULL,
+                                          NULL,
+                                          $targetx,
+                                          $targety,
+                                          $token,
+                                          NULL)")
