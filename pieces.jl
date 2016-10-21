@@ -558,7 +558,7 @@ module MCTS
           moves = getAllMoves(board[i, j], board, i, j)
           for k = 1:2:length(moves)
             if board[i+moves[k], j+moves[k+1]] == " " || board[i+moves[k], j+moves[k+1]][2] == string(color_opp)
-              push!(arr2, (i+move[k], j+move[k+1])
+              push!(arr2, (i+move[k], j+move[k+1]))
             end
           end
         end
