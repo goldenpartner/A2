@@ -721,7 +721,7 @@ module MCTS
        move_type = 'd'
       source_x = -1
       source_y = -1
-    else if choose_move < 700
+    elseif choose_move < 700
       move_type = 'm'
     else
       move_type = 'd'
