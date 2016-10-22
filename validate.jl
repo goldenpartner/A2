@@ -21,7 +21,7 @@ elseif board_type == "minishogi"
     " " " " " " " " "p1";
     "r1" "b1" "s1" "g1" "k1";]
 end
-
+flag = true
 for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
   global turn = i % 2 == 0 ? "0" : "1"
 
@@ -33,24 +33,33 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
   option = SQLite.query(DB,"SELECT option FROM moves WHERE \"move_number\" = $i;")[1].values[1]
 
   if move_type == "move"
+    #token does not exist
     if board[sourcex,sourcey] == " "
       print(i," ")
+      flag = false
       continue
+    #moves opponent token
     elseif board[sourcex,sourcey][2] != turn
       print(i," ")
+      flag = false
       continue
+    #cant do eat-self
     elseif board[targetx,targety][2] == turn
       print(i," ")
+      flag = false
       continue
+    #cant promte in unpromoteble area
     elseif option == "!"
       if turn = "0" #white
         if targetx < 7
           print(i," ")
+          flag = false
           continue
         end
       else
         if targetx > 3
           print(i," ")
+          flag = false
           continue
         end
       end
@@ -66,11 +75,15 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
         break
       end
     end
+    #died token dne
     if index == 0
       print(i," ")
+      flag = false
       continue
+    #target place has token
     elseif board[targetx,targety] != " "
       print(i," ")
+      flag = false
       continue
     else
       board[targetx,targety] = option * turn
@@ -79,3 +92,6 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
   elseif move_type == "resign"
     info("undo")
   end
+if flag
+  println("0")
+end
