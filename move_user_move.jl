@@ -6,7 +6,7 @@ sourcey = ARGS[3]
 targetx = ARGS[4]
 targety = ARGS[5]
 if length(ARGS) >= 6
-  promote = ARGS[6]
+  promote = ARGS[6] == "T" ? "!" : "NULL"
 else
   promote = "NULL"
 end
