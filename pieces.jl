@@ -7,7 +7,7 @@ module MCTS
       current_pos = [x, y]
       l = convert(Int, sqrt(length(board)))
       valid = []
-      for i = 1:2:16
+      for i = 1:2:length(allMove)
         move = [allMove[i], allMove[i+1]]
         target = current_pos + move
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
@@ -32,7 +32,7 @@ module MCTS
       current_pos = [x, y]
       l = convert(Int, sqrt(length(board)))
       valid = []
-      for j = 1:2:8
+      for j = 1:2:length(allMove)
         move = [allMove[j], allMove[j+1]]
         move_x = move[1]
         move_y = move[2]
@@ -171,6 +171,7 @@ module MCTS
           end
         end
       end
+      return valid
     end
   end
 
@@ -230,7 +231,7 @@ module MCTS
       current_pos = [x, y]
       l = convert(Int, sqrt(length(board)))
       valid = []
-      for i = 1:2:16
+      for i = 1:2:length(allMove)
         move = [allMove[i], allMove[i+1]]
         target = current_pos + move
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
@@ -261,7 +262,7 @@ module MCTS
       current_pos = [x, y]
       l = convert(Int, sqrt(length(board)))
       valid = []
-      for i = 1:2:16
+      for i = 1:2:length(allMove)
         move = [allMove[i], allMove[i+1]]
         target = current_pos + move
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
@@ -292,7 +293,7 @@ module MCTS
       current_pos = [x, y]
       l = convert(Int, sqrt(length(board)))
       valid = []
-      for i = 1:2:16
+      for i = 1:2:length(allMove)
         move = [allMove[i], allMove[i+1]]
         target = current_pos + move
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
@@ -323,7 +324,7 @@ module MCTS
       current_pos = [x, y]
       l = convert(Int, sqrt(length(board)))
       valid = []
-      for i = 1:2:16
+      for i = 1:2:length(allMove)
         move = [allMove[i], allMove[i+1]]
         target = current_pos + move
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
@@ -354,7 +355,7 @@ module MCTS
       current_pos = [x, y]
       l = convert(Int, sqrt(length(board)))
       valid = []
-      for i = 1:2:16
+      for i = 1:2:length(allMove)
         move = [allMove[i], allMove[i+1]]
         target = current_pos + move
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
@@ -372,8 +373,8 @@ module MCTS
   end
 
   module lance
-    allmove_w = [1 0]
-    allmove_b = [-1 0]
+    allmove_w = [0 1]
+    allmove_b = [0 -1]
     name = "l"
     value = 3
     function getmoves(board, x, y, color)
@@ -385,7 +386,7 @@ module MCTS
       current_pos = [x, y]
       l = convert(Int, sqrt(length(board)))
       valid = []
-      for i = 1:2:16
+      for i = 1:2:length(allMove)
         move = [allMove[i], allMove[i+1]]
         target = current_pos + move
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
@@ -416,7 +417,7 @@ module MCTS
       current_pos = [x, y]
       l = convert(Int, sqrt(length(board)))
       valid = []
-      for i = 1:2:16
+      for i = 1:2:length(allMove)
         move = [allMove[i], allMove[i+1]]
         target = current_pos + move
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
@@ -452,11 +453,11 @@ module MCTS
       if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
         return valid
       elseif board[(target[1]-1)*l + target[2]] == " "
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
+        push!(valid, allMove[1])
+        push!(valid, allMove[2])
       elseif board[(target[1]-1)*l + target[2]][2] == '1'
-        push!(valid, allMove[i])
-        push!(valid, allMove[i+1])
+        push!(valid, allMove[1])
+        push!(valid, allMove[2])
       end
       return valid
     end
@@ -476,7 +477,7 @@ module MCTS
       current_pos = [x, y]
       l = convert(Int, sqrt(length(board)))
       valid = []
-      for i = 1:2:16
+      for i = 1:2:length(allMove)
         move = [allMove[i], allMove[i+1]]
         target = current_pos + move
         if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
@@ -640,7 +641,7 @@ module MCTS
     elseif name == 'b'
       moves = bishop.getmoves(board, x, y, color)
     elseif name == 'g'
-      moves = gold_general.getmoves(board, x, y, color)
+      moves = Gold_General.getmoves(board, x, y, color)
     elseif name == 'k'
       moves = king.getmoves(board, x, y, color)
     elseif name == 'l'
