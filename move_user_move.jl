@@ -1,6 +1,6 @@
 using SQLite
 DB = SQLite.DB(ARGS[1])
-move_number = length(SQLite.query(DB,"SELECT move_number FROM moves")) + 1
+move_number = length(SQLite.query(DB,"SELECT move_number FROM moves;")[1]) + 1
 sourcex = ARGS[2]
 sourcey = ARGS[3]
 targetx = ARGS[4]
