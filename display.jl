@@ -39,3 +39,16 @@ print("   ")
 for i = 0 : x - 1
   print_with_color(:cyan,"   ",string('a' + i))
 end
+
+black = ""
+white = ""
+for i in died_token
+  if i[2] == 0
+    white *= i
+  else
+    black *= i
+  end
+end
+println("\nDied Token:")
+println("Black: ",black)
+println("White: ",white)
