@@ -32,7 +32,7 @@ function getCurrentBoard(DB)
     option = string(SQLite.query(DB,"SELECT option FROM moves WHERE \"move_number\" = $i;")[1][1])
     if move_type == "move"
       if board[targetx,targety] != " "
-        push!(died_token,board[targetx,targety])
+        push!(died_token,lowercase(board[targetx,targety]))
         board[targetx,targety] = board[sourcex,sourcey]
         board[sourcex,sourcey] = " "
       else
