@@ -1,5 +1,4 @@
-include("piece.jl")
-import king,root,pawn,bishop,silver_General,knight,lance,Gold_General,Pawn,Rook,Bishop,Silver_General,Knight,Lance
+include("pieces.jl")
 using SQLite
 
 died_token = Array{String}(0)
@@ -37,35 +36,50 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
     if board[sourcex,sourcey] == " "
       print(i," ")
       flag = false
-      continue
+      break
     #moves opponent token
     elseif board[sourcex,sourcey][2] != turn
       print(i," ")
       flag = false
-      continue
+      break
     #cant do eat-self
     elseif board[targetx,targety][2] == turn
       print(i," ")
       flag = false
-      continue
+      break
     #cant promte in unpromoteble area
     elseif option == "!"
       if turn = "0" #white
         if targetx < 7
           print(i," ")
           flag = false
-          continue
+          break
         end
       else
         if targetx > 3
           print(i," ")
           flag = false
-          continue
+          break
         end
       end
     else
-      info("undo")
+      valid_move=MCTS.getAllMoves(board[sourcex,sourcey],board,sourcex,sourcey,parse(turn))
+      i=1
+      check=false
+      while i<length(valid_move)
+        check_valid=(sourcex+valid_move[i],sourcey+valid_move[i+1])
+        if (targetx,targety) == check_valid
+          check=true
+        end
+        i=i+2
+      end
+      if !check
+        print(i," ")
+        flag = false
+        break
+      end
     end
+
   elseif move_type == "drop"
     index = 0
     #find index
@@ -79,18 +93,16 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
     if index == 0
       print(i," ")
       flag = false
-      continue
+      break
     #target place has token
     elseif board[targetx,targety] != " "
       print(i," ")
       flag = false
-      continue
+      break
     else
       board[targetx,targety] = option * turn
       deleteat!(died_token,index)
     end
-  elseif move_type == "resign"
-    info("undo")
   end
 if flag
   println("0")
