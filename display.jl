@@ -22,9 +22,9 @@ for i = 1: 2*y + 1
         print(" ")
       else
         if board[j,Int(i/2)][2] == '0'
-          print_with_color(:bold,string(board[j,Int(i/2)][1]))
+          print_with_color(board[j,Int(i/2)][1] == 'k'? :yellow : :bold,string(board[j,Int(i/2)][1]))
         else
-          print_with_color(:black,string(board[j,Int(i/2)][1]))
+          print_with_color(board[j,Int(i/2)][1] == 'k'? :yellow : :black,string(board[j,Int(i/2)][1]))
         end
       end
       print(" |")
