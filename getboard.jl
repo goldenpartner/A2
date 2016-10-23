@@ -43,7 +43,7 @@ function getCurrentBoard(DB)
         board[targetx,targety] = uppercase(board[targetx,targety])
       end
     elseif move_type == "resign"
-      return board,died_arr
+      return board,died_token
     elseif move_type == "drop"
       index = 0
       #find index
