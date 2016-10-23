@@ -1,7 +1,7 @@
 using SQLite
 DB = SQLite.DB(ARGS[1])
 #get current move_id
-move_number = length(SQLite.query(DB,"SELECT move_number FROM moves")) + 1
+move_number = length(SQLite.query(DB,"SELECT move_number FROM moves;")[1]) + 1
 token = ARGS[2]
 targetx = ARGS[3]
 targety = ARGS[4]
