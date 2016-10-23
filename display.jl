@@ -44,9 +44,9 @@ black = ""
 white = ""
 for i in died_token
   if i[2] == '0'
-    white *= i
+    white *= string(i[1])
   else
-    black *= i
+    black *= string(i[1])
   end
 end
 println("\nDied Token")
