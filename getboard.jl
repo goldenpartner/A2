@@ -47,8 +47,10 @@ function getCurrentBoard(DB)
     elseif move_type == "drop"
       index = 0
       #find index
-      for k = 1:length(died_arr)
-        if died_arr[k] == option * turn
+      token_name = findfirst(option,turn == "0" ? '0' : '1')
+      option = string(option[token_name-1])
+      for k = 1:length(died_token)
+        if died_token[k] == option * turn
           index = k
           break
         end
