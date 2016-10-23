@@ -615,7 +615,7 @@ module MCTS
     for i = 1:size
       for j = 1:size
         if board[i, j][2] == color_opp
-          deleteat!(own, findfirst(own, string(board[i, j][1])))
+          deleteat!(own, findfirst(own, lowercase(string(board[i, j][1]))))
         end
       end
     end
