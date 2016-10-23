@@ -1,7 +1,7 @@
 include("getboard.jl")
 board,died_token = getCurrentBoard(ARGS[1])
 x,y = size(board)
-print("   ")
+print("\n\n   ")
 for i = 0 : x - 1
   print_with_color(:cyan,"   ",string('a' + i))
 end
@@ -43,12 +43,12 @@ end
 black = ""
 white = ""
 for i in died_token
-  if i[2] == 0
+  if i[2] == '0'
     white *= i
   else
     black *= i
   end
 end
-println("\nDied Token:")
+println("\nDied Token")
 println("Black: ",black)
 println("White: ",white)
