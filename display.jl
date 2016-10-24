@@ -49,6 +49,6 @@ for i in died_token
     black *= string(i[1]) * " "
   end
 end
-println("\nDied Token")
+println("\nDrop Token")
 println("Black: ",black)
 println("White: ",white)
