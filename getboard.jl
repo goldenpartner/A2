@@ -56,6 +56,9 @@ function getCurrentBoard(DB)
           break
         end
       end
+      if board[targetx,targety] != " "
+        push!(died_token,lowercase(board[targetx,targety]))
+      end
       if index != 0
         board[targetx,targety] = option * turn
         deleteat!(died_token,index)
