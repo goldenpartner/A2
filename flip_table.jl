@@ -10,7 +10,7 @@ SQLite.query(DB,"delete from moves")
 SQLite.execute!(DB,"INSERT INTO moves VALUES(100,\"FICtonia\",5,5,1,5,\"lost\",9)")
 SQLite.execute!(DB,"INSERT INTO moves VALUES(100,\"FICtonia\",5,5,9,5,\"lost\",9)")
 print("Do you want to resign[Y/N]: ")
-a = chomp(readline())
+a = uppercase(chomp(readline()))
 if a == "N"
   for i in "In my dictionary, N means Yes."
     print(i)
