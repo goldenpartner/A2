@@ -1,7 +1,7 @@
 using SQLite
 
 DB = SQLite.DB(ARGS[1])
-move_number = length(SQLite.query(DB,"SELECT move_number FROM moves;")[1]) + 1
+move_number = length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
 flag = true
 kings = [(1,5),(9,5)]
 for i = 1 : move_number
