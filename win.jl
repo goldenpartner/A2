@@ -30,7 +30,7 @@ for i = 1 : move_number
     println(turn == "1"?"R":"r")
     flag = false
     break
-  elseif move_type == "move" || "drop"
+  elseif move_type == "move" || move_type == "drop"
     if (sourcex,sourcey) == kings[1]
       kings[1] = (targetx,targety)
     elseif (sourcex,sourcey) == kings[2]
