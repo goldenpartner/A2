@@ -60,5 +60,5 @@ SQLite.execute!(DB,insert_query)
 create_table_moves ="create table moves(move_number INTEGER,move_type TEXT,
                                         sourcex INTEGER, sourcey INTEGER,
                                         targetx INTEGER, targety INTEGER,
-                                        option NONE, i_am_cheating NONE)"
+                                        option TEXT, i_am_cheating TEXT)"
 SQLite.execute!(DB,create_table_moves)
