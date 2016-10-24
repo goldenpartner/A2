@@ -48,4 +48,3 @@ end
 if flag
   println("?")
 end
-info("DRAW unfinished")
