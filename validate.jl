@@ -1,6 +1,6 @@
 include("pieces.jl")
 using SQLite
-
+#define board
 DB = SQLite.DB(ARGS[1])
 died_token = Array{String}(0)
 board_type = SQLite.query(DB,"SELECT value FROM meta WHERE key = \"type\";")[1].values[1]
@@ -21,10 +21,13 @@ elseif board_type == "minishogi"
     " " " " " " " " "p1";
     "r1" "b1" "s1" "g1" "k1";]
 end
+
+#define situation
 flag = true
+#replay game and trace every moves
 for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
   global turn = i % 2 == 0 ? "0" : "1"
-
+  #update move_vars
   move_type = SQLite.query(DB,"SELECT move_type FROM moves WHERE \"move_number\" = $i;")[1].values[1]
   sourcex = SQLite.query(DB,"SELECT sourcex FROM moves WHERE \"move_number\" = $i;")[1].values[1]
   sourcey = SQLite.query(DB,"SELECT sourcey FROM moves WHERE \"move_number\" = $i;")[1].values[1]
@@ -35,7 +38,7 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
   catch
     global option = "NULL"
   end
-
+  #validating depends on mvoe_type
   if move_type == "move"
     #token does not exist
     if board[sourcex,sourcey] == " "
@@ -43,17 +46,17 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
       flag = false
       break
     #moves opponent token
-  elseif string(board[sourcex,sourcey][2]) != turn
-      print(i," ")
-      flag = false
-      break
-    #cant do eat-self
-  elseif board[targetx,targety] != " " && string(board[targetx,targety][2]) == turn
-      print(i," ")
-      flag = false
-      break
+    elseif string(board[sourcex,sourcey][2]) != turn
+        print(i," ")
+        flag = false
+        break
+    #cant eat friend
+    elseif board[targetx,targety] != " " && string(board[targetx,targety][2]) == turn
+          print(i," ")
+          flag = false
+          break
     #cant promte in unpromoteble area
-  elseif option == "!"
+    elseif option == "!"
       if turn == "0" #white
         if targetx < 7
           print(i," ")
@@ -67,30 +70,30 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
           break
         end
       end
-  end
-  valid_move = MCTS.getAllMoves(board[sourcex,sourcey],board,sourcex,sourcey,parse(turn))
-  j = 1
-  check = false
-  while j < length(valid_move)
-    check_valid=(sourcex+valid_move[j],sourcey+valid_move[j+1])
-    if (targetx,targety) == check_valid
-      check = true
-      if board[targetx,targety] != " "
-        push!(died_token,string(board[targetx,targety][1]))
+    end
+    valid_move = MCTS.getAllMoves(board[sourcex,sourcey],board,sourcex,sourcey,parse(turn))
+    j = 1
+    check = false
+    while j < length(valid_move)
+      check_valid=(sourcex+valid_move[j],sourcey+valid_move[j+1])
+      if (targetx,targety) == check_valid
+        check = true
+        if board[targetx,targety] != " "
+          died_team = turn == "0" ? "1" : "0"
+          push!(died_token,string(board[targetx,targety][1])*died_team)
+        end
+        board[targetx,targety] = board[sourcex,sourcey]
+        board[sourcex,sourcey] = " "
+        break
       end
-      board[targetx,targety] = board[sourcex,sourcey]
-      board[sourcex,sourcey] = " "
+      j = j + 2
+    end
+    if !check
+      print(i," ")
+      flag = false
       break
     end
-    j = j + 2
-  end
-  if !check
-    print(i," ")
-    flag = false
-    break
-  end
-
-  if move_type == "drop"
+  elseif move_type == "drop"
     index = 0
     #find index
     for k = 1:length(died_token)
@@ -100,23 +103,26 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
       end
     end
     #died token dne
-    info(index)
+    info(died_token)
     if index == 0
       print(i," ")
       flag = false
       break
-    #target place has token
+    #died token existed & droped place has token
     elseif board[targetx,targety] != " "
       print(i," ")
       flag = false
       break
+    #died token existed
     else
       board[targetx,targety] = option * turn
       deleteat!(died_token,index)
     end
+  elseif move_type == "resign"
+    break
   end
 end
-end
+
 if flag
   println("0")
 end
