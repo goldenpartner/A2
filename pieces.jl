@@ -67,10 +67,12 @@ module MCTS
         if board[i,j] != " " && board[i,j][2] == '1'
           color = 1
           moves = getAllMoves(board[i,j][1], board, i,j,color_opp)
-          for k = 1:2:length(moves)
-            target_index = (i+moves[k], j+moves[k+1])
-            if target_index == (x, y)
-              return true
+          if moves != nothing
+            for k = 1:2:length(moves)
+              target_index = (i+moves[k], j+moves[k+1])
+              if target_index == (x, y)
+                return true
+              end
             end
           end
         end
@@ -575,6 +577,7 @@ module MCTS
   end
 
   function count_self(table, color, table_type)
+    println(table)
     count = 0
     if table_type == 'S'
       size = 9
@@ -583,7 +586,9 @@ module MCTS
     end
     for i = 1:size
       for j = 1:size
-        if table.temp_standard[i][j][2] == color
+        if table[(i-1)*size+j] == " "
+          continue
+        elseif table[(i-1)*size+j][2] == string(color)[1]
           count += 1
         end
       end
@@ -703,49 +708,46 @@ module MCTS
 
   function getAllMoves(char, board, x, y, color)
     if isupper(char[1])
-      moves = getMovePro(char, board, x, y, color)
+      return getMovePro(char, board, x, y, color)
     else
-      moves = getMoveStd(char, board, x, y, color)
+      return getMoveStd(char, board, x, y, color)
     end
-    return moves
   end
   function getMoveStd(char, board, x, y, color)
     name = char[1]
     if name == 'p'
-      moves = pawn.getmoves(board, x, y, color)
+      return pawn.getmoves(board, x, y, color)
     elseif name == 'b'
-      moves = bishop.getmoves(board, x, y, color)
+      return bishop.getmoves(board, x, y, color)
     elseif name == 'g'
-      moves = Gold_General.getmoves(board, x, y, color)
+      return Gold_General.getmoves(board, x, y, color)
     elseif name == 'k'
-      moves = king.getmoves(board, x, y, color)
+      return king.getmoves(board, x, y, color)
     elseif name == 'l'
-      moves = lance.getmoves(board, x, y, color)
+      return lance.getmoves(board, x, y, color)
     elseif name == 'n'
-      moves = knight.getmoves(board, x, y,color)
+      return knight.getmoves(board, x, y,color)
     elseif name == 'r'
-      moves = rook.getmoves(board, x, y,color)
+      return rook.getmoves(board, x, y,color)
     elseif name == 's'
-      moves = silver_General.getmoves(board, x, y, color)
+      return silver_General.getmoves(board, x, y, color)
     end
-    return moves
   end
   function getMovePro(char, board, x, y,color)
     name = char[1]
     if name == 'p'
-      moves = Pawn.getmoves(board, x, y,color)
+      return Pawn.getmoves(board, x, y,color)
     elseif name == 'B'
-      moves = Bishop.getmoves(board, x, y,color)
+      return Bishop.getmoves(board, x, y,color)
     elseif name == 'L'
-      moves = Lance.getmoves(board, x, y,color)
+      return Lance.getmoves(board, x, y,color)
     elseif name == 'N'
-      moves = Knight.getmoves(board, x, y,color)
+      return  Knight.getmoves(board, x, y,color)
     elseif name == 'R'
-      moves = Rook.getmoves(board, x, y,color)
+      return Rook.getmoves(board, x, y,color)
     elseif name == 'S'
-      moves = Silver_General.getmoves(board, x, y,color)
+      return Silver_General.getmoves(board, x, y,color)
     end
-    return moves
   end
 
   function move(filename)
