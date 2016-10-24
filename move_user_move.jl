@@ -26,13 +26,4 @@ if promote == "!"
                                             $targety,
                                             \"$promote\",
                                             NULL)")
-else
-  SQLite.query(DB,"INSERT INTO moves VALUES($move_number,
-                                            \"move\",
-                                            $sourcex,
-                                            $sourcey,
-                                            $targetx,
-                                            $targety,
-                                            NULL,
-                                            NULL)")
 end
