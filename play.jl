@@ -67,7 +67,7 @@ function chess_game()
 
   #get each parameter
   move_number = 1
-  while (true)
+  while (wingame(new_game)== "?")
     println("move_number : $move_number")
     if move_number%2 == side
       println("your turn:  ")
@@ -97,7 +97,7 @@ function chess_game()
 
       move_code = move_code[temp+1:end]
       temp = search(move_code,',')
-      targetY = parse(move_code[1:temp-1])
+      targetY = parse(move_code[1:1])
       println(targetY)
 
       move_code = move_code[temp+1:end]
@@ -119,10 +119,78 @@ function chess_game()
     run(`julia --color=yes -- display.jl $new_game`)
     move_number = move_number+1
   end
-end
-function win(new_game)
+
+  if (wingame(new_game) == "B")
+    if (side == 1)
+      println(" YOU WIN! ")
+    else
+      println(" YOU LOST")
+    end
+  else
+    if (side == 0)
+      println(" YOU WIN! ")
+    else
+      println(" YOU LOST")
+    end
+  end
 
 end
+
+
+function wingame(filename)
+  DB = SQLite.DB(filename)
+  move_number = length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
+  flag = true
+  kings = [(1,5),(9,5)]
+  for i = 1 : move_number
+    global turn = i % 2 == 0 ? "0" : "1"
+
+    move_type = SQLite.query(DB,"SELECT move_type FROM moves WHERE \"move_number\" = $i;")[1].values[1]
+    try
+      global sourcex = SQLite.query(DB,"SELECT sourcex FROM moves WHERE \"move_number\" = $i;")[1].values[1]
+    catch
+      global sourcex = -1
+    end
+    try
+      global sourcey = SQLite.query(DB,"SELECT sourcey FROM moves WHERE \"move_number\" = $i;")[1].values[1]
+    catch
+      global sourcey = -1
+    end
+    targetx = SQLite.query(DB,"SELECT targetx FROM moves WHERE \"move_number\" = $i;")[1].values[1]
+    targety = SQLite.query(DB,"SELECT targety FROM moves WHERE \"move_number\" = $i;")[1].values[1]
+    try
+      global option = string(SQLite.query(DB,"SELECT option FROM moves WHERE \"move_number\" = $i;")[1].values[1])
+    catch
+      global option = "NULL"
+    end
+    #resign
+    if move_type == "resign"
+      return(turn == "1"?"R":"r")
+      flag = false
+      break
+    elseif move_type == "move" || move_type == "drop"
+      if (sourcex,sourcey) == kings[1]
+        kings[1] = (targetx,targety)
+      elseif (sourcex,sourcey) == kings[2]
+        kings[2] = (targetx,targety)
+      end
+      if (targetx,targety) == kings[1]
+        return("B")
+        flag = false
+        break
+      elseif (targetx,targety) == kings[2]
+        return("W")
+        flag = false
+        break
+      end
+    end
+  end
+  #game's on
+  if flag
+    return("?")
+  end
+end
+
 
 
 
