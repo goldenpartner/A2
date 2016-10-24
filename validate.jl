@@ -30,7 +30,11 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
   sourcey = SQLite.query(DB,"SELECT sourcey FROM moves WHERE \"move_number\" = $i;")[1].values[1]
   targetx = SQLite.query(DB,"SELECT targetx FROM moves WHERE \"move_number\" = $i;")[1].values[1]
   targety = SQLite.query(DB,"SELECT targety FROM moves WHERE \"move_number\" = $i;")[1].values[1]
-  option = SQLite.query(DB,"SELECT option FROM moves WHERE \"move_number\" = $i;")[1].values[1]
+  try
+    global option = string(SQLite.query(DB,"SELECT option FROM moves WHERE \"move_number\" = $i;")[1].values[1])
+  catch
+    global option = "NULL"
+  end
 
   if move_type == "move"
     #token does not exist
@@ -39,17 +43,17 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
       flag = false
       break
     #moves opponent token
-    elseif board[sourcex,sourcey][2] != turn
+  elseif string(board[sourcex,sourcey][2]) != turn
       print(i," ")
       flag = false
       break
     #cant do eat-self
-    elseif board[targetx,targety][2] == turn
+  elseif board[targetx,targety] != " " && string(board[targetx,targety][2]) == turn
       print(i," ")
       flag = false
       break
     #cant promte in unpromoteble area
-    elseif option == "!"
+  elseif option == "!"
       if turn == "0" #white
         if targetx < 7
           print(i," ")
@@ -63,34 +67,40 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
           break
         end
       end
-    else
-      valid_move=MCTS.getAllMoves(board[sourcex,sourcey],board,sourcex,sourcey,parse(turn))
-      i=1
-      check=false
-      while i<length(valid_move)
-        check_valid=(sourcex+valid_move[i],sourcey+valid_move[i+1])
-        if (targetx,targety) == check_valid
-          check=true
-        end
-        i=i+2
+  end
+  valid_move = MCTS.getAllMoves(board[sourcex,sourcey],board,sourcex,sourcey,parse(turn))
+  j = 1
+  check = false
+  while j < length(valid_move)
+    check_valid=(sourcex+valid_move[j],sourcey+valid_move[j+1])
+    if (targetx,targety) == check_valid
+      check = true
+      if board[targetx,targety] != " "
+        push!(died_token,string(board[targetx,targety][1]))
       end
-      if !check
-        print(i," ")
-        flag = false
-        break
-      end
+      board[targetx,targety] = board[sourcex,sourcey]
+      board[sourcex,sourcey] = " "
+      break
     end
+    j = j + 2
+  end
+  if !check
+    print(i," ")
+    flag = false
+    break
+  end
 
-  elseif move_type == "drop"
+  if move_type == "drop"
     index = 0
     #find index
-    for k = 1:length(died_arr)
-      if died_arr[k] == option * turn
+    for k = 1:length(died_token)
+      if died_token[k] == option * turn
         index = k
         break
       end
     end
     #died token dne
+    info(index)
     if index == 0
       print(i," ")
       flag = false
@@ -105,6 +115,8 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
       deleteat!(died_token,index)
     end
   end
+end
+end
 if flag
   println("0")
 end
