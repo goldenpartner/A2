@@ -35,12 +35,15 @@ for i = 1 : move_number
       kings[1] = (targetx,targety)
     elseif (sourcex,sourcey) == kings[2]
       kings[2] = (targetx,targety)
-    elseif (targetx,targety) == kings[1]
+    end
+    if (targetx,targety) == kings[1]
       println("B")
       flag = false
+      break
     elseif (targetx,targety) == kings[2]
       println("W")
       flag = false
+      break
     end
   end
 end
