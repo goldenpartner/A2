@@ -101,7 +101,7 @@ function chess_game()
       println(targetY)
 
       move_code = move_code[temp+1:end]
-      option = move_code
+      option = move_code[1]
       println(option)
 
       if move_type == "move"
@@ -116,7 +116,6 @@ function chess_game()
       sleep(1)
       #run(`julia move.jl $new_game`)
     end
-
     run(`julia --color=yes -- display.jl $new_game`)
     move_number = move_number+1
   end
