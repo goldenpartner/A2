@@ -29,8 +29,16 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
   global turn = i % 2 == 0 ? "0" : "1"
   #update move_vars
   move_type = SQLite.query(DB,"SELECT move_type FROM moves WHERE \"move_number\" = $i;")[1].values[1]
-  sourcex = SQLite.query(DB,"SELECT sourcex FROM moves WHERE \"move_number\" = $i;")[1].values[1]
-  sourcey = SQLite.query(DB,"SELECT sourcey FROM moves WHERE \"move_number\" = $i;")[1].values[1]
+  try
+    global sourcex = SQLite.query(DB,"SELECT sourcex FROM moves WHERE \"move_number\" = $i;")[1].values[1]
+  catch
+    global sourcex = -1
+  end
+  try
+    global sourcey = SQLite.query(DB,"SELECT sourcey FROM moves WHERE \"move_number\" = $i;")[1].values[1]
+  catch
+    global sourcey = -1
+  end
   targetx = SQLite.query(DB,"SELECT targetx FROM moves WHERE \"move_number\" = $i;")[1].values[1]
   targety = SQLite.query(DB,"SELECT targety FROM moves WHERE \"move_number\" = $i;")[1].values[1]
   try
@@ -103,7 +111,6 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
       end
     end
     #died token dne
-    info(died_token)
     if index == 0
       print(i," ")
       flag = false
