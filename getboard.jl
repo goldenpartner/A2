@@ -32,7 +32,7 @@ function getCurrentBoard(DB)
     try
       global option = string(SQLite.query(DB,"SELECT option FROM moves WHERE \"move_number\" = $i;")[1].values[1])
     catch
-      global = "NULL"
+      global option = "NULL"
     end
       
     if move_type == "move"
