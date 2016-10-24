@@ -7,8 +7,8 @@ targetx = ARGS[3]
 targety = ARGS[4]
 SQLite.query(DB,"INSERT INTO moves VALUES($move_number,
                                           \"drop\",
-                                          -1,
-                                          -1,
+                                          NULL,
+                                          NULL,
                                           $targetx,
                                           $targety,
                                           \"$token\",
