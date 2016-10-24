@@ -777,10 +777,10 @@ module MCTS
     self_count = count_self(table, color, table_type)
     opp_count = count_opp(table, color, table_type)
     c = 0
-    source_x::Int
-    source_y::Int
-    xtarget::Int
-    ytarget::Int
+    local source_x::Int
+    local source_y::Int
+    local xtarget::Int
+    local ytarget::Int
 
     source_x = NaN
     source_y = NaN
