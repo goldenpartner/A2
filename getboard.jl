@@ -29,12 +29,7 @@ function getCurrentBoard(DB)
     sourcey = SQLite.query(DB,"SELECT sourcey FROM moves WHERE \"move_number\" = $i;")[1].values[1]
     targetx = SQLite.query(DB,"SELECT targetx FROM moves WHERE \"move_number\" = $i;")[1].values[1]
     targety = SQLite.query(DB,"SELECT targety FROM moves WHERE \"move_number\" = $i;")[1].values[1]
-    try
-      global option = string(SQLite.query(DB,"SELECT option FROM moves WHERE \"move_number\" = $i;")[1].values[1])
-    catch
-      global option = "NULL"
-    end
-      
+    option = string(SQLite.query(DB,"SELECT option FROM moves WHERE \"move_number\" = $i;")[1][1])
     if move_type == "move"
       if board[targetx,targety] != " "
         push!(died_token,lowercase(board[targetx,targety]))
@@ -44,13 +39,16 @@ function getCurrentBoard(DB)
         board[targetx,targety] = board[sourcex,sourcey]
         board[sourcex,sourcey] = " "
       end
-      if option == "!"
+      if findfirst(option,'!') > 0
         board[targetx,targety] = uppercase(board[targetx,targety])
       end
     elseif move_type == "resign"
       return board,died_token
     elseif move_type == "drop"
       index = 0
+      #find index
+      #token_name = findfirst(option,turn == "0" ? '0' : '1')
+      option = string(string(option)[19])
       for k = 1:length(died_token)
         if died_token[k] == option * turn
           index = k
