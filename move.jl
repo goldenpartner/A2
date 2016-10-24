@@ -1,7 +1,7 @@
 using SQLite
 include("pieces.jl")
   #set up necessary variables
-filename = "chess"
+filename = ARGES[1]
 DB = SQLite.DB(filename)
 game_type = string(SQLite.query(DB,  "select * from meta where key == \"type\"")[2].values[1])
 println(game_type)
