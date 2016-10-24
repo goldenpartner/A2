@@ -1,10 +1,11 @@
 using SQLite
 include("pieces.jl")
+using MCTS
   #set up necessary variables
-filename = ARGES[1]
+filename = "testdb"
 DB = SQLite.DB(filename)
 game_type = string(SQLite.query(DB,  "select * from meta where key == \"type\"")[2].values[1])
-println(game_type)
+
 game_type = game_type[10:findfirst(game_type, ')')-1]
 if game_type == "minishogi"
   size = 5
@@ -16,14 +17,15 @@ else
   table_type = 'S'
 end
 seed_temp = string(SQLite.query(DB,  "select * from meta where key == \"seed\"")[2].values[1])
-println(seed_temp)
-seed = parse(Float64, seed_temp)
-srand(int(seed))
+
+#seed = parse(Float64, seed_temp)
+srand(0)
 cheating = false
 color = NaN
 t = string(SQLite.query(DB,"SELECT COUNT(*) FROM moves")[1][1])
-temp = parse(Int, t[10:findfirst(t, ')')-1])
-if temp%2 == 0
+println(t)
+move_num = parse(Int, t[17:findfirst(t, ')')-1])
+if move_num%2 == 0
   color = 0
   color_opp = 1
 else
@@ -35,11 +37,15 @@ board, kills = getCurrentBoard(filename)
 self_count = MCTS.count_self(board, color, table_type)
 opp_count = MCTS.count_opp(board, color, table_type)
 c = 0
-x = NaN
-y = NaN
+x = -1
+y = -1
 source_x = NaN
 source_y = NaN
 move_type = NaN
+x_pro = -1
+y_pro = -1
+promotion = false
+move_char = ""
 #choose a move type
 choose_move = rand(1:1000)
 if choose_move < 10
@@ -90,7 +96,7 @@ if move_type == 'd'
         board[i,j] = drop_char
         if MCTS.check(board, k_x, k_y, color_opp)
           sql_move = "insert into moves(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
-          sql_move *= " values ($(drop_char), -1, -1, $(i), $(j), \"d\",  NULL)"
+          sql_move *= " values ($(move_num+1),\"drop\", -1, -1, $(i), $(j), \"d\",  NULL)"
           exit(0)
         else
           board[i,j] = " "
@@ -107,56 +113,61 @@ elseif move_type == 'm'
     for j = 1:size
       if board[i, j] != " " && board[i, j][2] == string(color)[1]
         move_char = board[i,j][1]
-        moves = MCTS.getAllMoves(board[i,j], board, i,j,color)
-        for k = 1:length(moves)
-          xtarget = i+moves[k]
-          ytarget = j+moves[k+1]
-          temp = board[xtarget, ytarget]
-          board[xtarget, ytarget] = board[i,j]
-          board[i,j] = " "
-          #if the move an check the opposite, do it
-          if MCTS.check(board, k_x,k_y,color_opp)
-            if xtarget <= promote_line
-              promotion = true
-            else
-              promotion = false
-            end
-            sql_move = "insert into moves(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
-            if promotion && !cheating
-              sql_move *= " values ($(move_char), $(i), $(j), $(xtarget), $(ytarget), \'!\',  NULL)"
-            elseif promotion && cheating
-              sql_move *= " values ($(move_char), $(i), $(j), $(xtarget), $(ytarget), \'!\',  \"Cheated\")"
-            elseif !promotion && cheating
-              sql_move *= " values ($(move_char), $(i), $(j), $(xtarget), $(ytarget), NULL,  \"Cheated\")"
-            else
-              sql_move *= " values ($(move_char), $(i), $(j), $(xtarget), $(ytarget), NULL,  NULL)"
-            end
-            stmt = SQLite.Stmt(DB, sql_move)
-            SQLite.execute!(stmt)
-            exit(0)
-          #if the move cannot check but can kill a opposite char, save it for compare
-          else
-            if temp != " "
-              if isupper(temp[1])
-                v = MCTS.get_weight_pro(temp[1])
+        global moves = MCTS.getAllMoves(board[i,j], board, i,j,color)
+        if moves == nothing
+          println(i, " ", j)
+        else
+          for k = 1:2:length(moves)
+            xtarget = i+moves[k]
+            ytarget = j+moves[k+1]
+            temp = board[xtarget, ytarget]
+            board[xtarget, ytarget] = board[i,j]
+            board[i,j] = " "
+            #if the move an check the opposite, do it
+            if MCTS.check(board, k_x,k_y,color_opp)
+              if xtarget <= promote_line
+                promotion = true
               else
-                v = MCTS.get_weight_std(temp[1])
+                promotion = false
               end
-              if v > v_l
-                v_l = v
-                x_l = xtarget
-                y_l = ytarget
-                move_char = board[x_l,y_l]
+              sql_move = "insert into moves(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
+              if promotion && !cheating
+                sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), \'!\',  NULL)"
+              elseif promotion && cheating
+                sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), \'!\',  1)"
+              elseif !promotion && cheating
+                sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), NULL,  1)"
+              else
+                sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), NULL,  NULL)"
               end
-            elseif xtarget <= promote_line
-              x_pro = xtarget
-              y_por = ytarget
-              x = i
-              y = j
-              move_char = board[xtarget, ytarget]
+              stmt = SQLite.Stmt(DB, sql_move)
+              SQLite.execute!(stmt)
+              exit(0)
+            #if the move cannot check but can kill a opposite char, save it for compare
+            else
+              if temp != " "
+                if isupper(temp[1])
+                  v = MCTS.get_weight_pro(temp[1])
+                else
+                  v = MCTS.get_weight_std(temp[1])
+                end
+                if v > v_l
+                  global v_l = v
+                  global x_l = xtarget
+                  global y_l = ytarget
+                  move_char = board[x_l,y_l]
+                end
+              elseif xtarget <= promote_line
+                x_pro = xtarget
+                y_pro = ytarget
+                global x = i
+                global y = j
+                move_char = board[xtarget, ytarget]
+                promotion = true
+              end
+              board[i,j] = board[xtarget,ytarget]
+              board[xtarget,ytarget] = temp
             end
-            board[i,j] = board[xtarget,ytarget]
-            board[xtarget,ytarget] = temp
           end
         end
       end
@@ -166,15 +177,15 @@ elseif move_type == 'm'
     x_l = x_pro
     y_l = y_pro
   end
-  sql_move = "insert into moves(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
+  sql_move = "insert into moves(move_number,move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
   if promotion && !cheating
-    sql_move *= " values ($(move_char), $(x), $(y), $(x_l), $(y_l), \'!\',  NULL)"
+    sql_move *= " values ($(move_num+1),\"move\", $(x), $(y), $(x_l), $(y_l), \'!\',  NULL)"
   elseif promotion && cheating
-    sql_move *= " values ($(move_char), $(x), $(y), $(x_l), $(y_l), \'!\',  \"Cheated\")"
+    sql_move *= " values ($(move_num+1),\"move\", $(x), $(y), $(x_l), $(y_l), \'!\',  1)"
   elseif !promotion && cheating
-    sql_move *= " values ($(move_char), $(x), $(y), $(x_l), $(y_l), NULL,  \"Cheated\")"
+    sql_move *= " values ($(move_num+1),\"move\", $(x), $(y), $(x_l), $(y_l), NULL,  1)"
   else
-    sql_move *= " values ($(move_char), $(x), $(y), $(x_l), $(y_l), NULL,  NULL)"
+    sql_move *= " values ($(move_num+1),\"move\", $(x), $(y), $(x_l), $(y_l), NULL,  NULL)"
   end
   stmt = SQLite.Stmt(DB, sql_move)
   SQLite.execute!(stmt)
