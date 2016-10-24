@@ -23,7 +23,7 @@ function getCurrentBoard(DB)
   end
   for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
     global turn = i % 2 == 0 ? "0" : "1"
-    info(i)
+    
     move_type = SQLite.query(DB,"SELECT move_type FROM moves WHERE \"move_number\" = $i;")[1].values[1]
     try
       global sourcex = SQLite.query(DB,"SELECT sourcex FROM moves WHERE \"move_number\" = $i;")[1].values[1]
