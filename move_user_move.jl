@@ -8,13 +8,31 @@ targety = ARGS[5]
 if length(ARGS) >= 6
   promote = ARGS[6] == "T" ? "!" : "NULL"
 else
-  promote = "NULL"
+  SQLite.query(DB,"INSERT INTO moves VALUES($move_number,
+                                            \"move\",
+                                            $sourcex,
+                                            $sourcey,
+                                            $targetx,
+                                            $targety,
+                                            NULL,
+                                            NULL)")
 end
-SQLite.query(DB,"INSERT INTO moves VALUES($move_number,
-                                          \"move\",
-                                          $sourcex,
-                                          $sourcey,
-                                          $targetx,
-                                          $targety,
-                                          \"$promote\",
-                                          NULL)")
+if promote == "!"
+  SQLite.query(DB,"INSERT INTO moves VALUES($move_number,
+                                            \"move\",
+                                            $sourcex,
+                                            $sourcey,
+                                            $targetx,
+                                            $targety,
+                                            \"$promote\",
+                                            NULL)")
+else
+  SQLite.query(DB,"INSERT INTO moves VALUES($move_number,
+                                            \"move\",
+                                            $sourcex,
+                                            $sourcey,
+                                            $targetx,
+                                            $targety,
+                                            NULL,
+                                            NULL)")
+end
