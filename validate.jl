@@ -1,6 +1,7 @@
 include("pieces.jl")
 using SQLite
 
+DB = SQLite.DB(ARGS[1])
 died_token = Array{String}(0)
 board_type = SQLite.query(DB,"SELECT value FROM meta WHERE key = \"type\";")[1].values[1]
 if board_type == "standard"
@@ -49,7 +50,7 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
       break
     #cant promte in unpromoteble area
     elseif option == "!"
-      if turn = "0" #white
+      if turn == "0" #white
         if targetx < 7
           print(i," ")
           flag = false
