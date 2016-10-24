@@ -514,23 +514,21 @@ module MCTS
     value = 1
     function getmoves(board, x, y, color)
       if color == 1
+        color_opp = 0
         allMove = allmove_b
       else
+        color_opp = 1
         allMove = allmove_w
       end
-      current_pos = [x, y]
       l = convert(Int, sqrt(length(board)))
       valid = []
-      move = [1, 0]
-      target = current_pos + move
-      if (target[1] > l || target[1] < 1) || (target[2] > l || target[2] < 1)
-        return valid
-      elseif board[(target[1]-1)*l + target[2]] == " "
+      target_x= x+allMove[1]
+      if board[target_x, y] == " "
         push!(valid, allMove[1])
-        push!(valid, allMove[2])
-      elseif board[(target[1]-1)*l + target[2]][2] == '1'
+        push!(valid, 0)
+      elseif board[target_x, y][2] == string(color_opp)[1]
         push!(valid, allMove[1])
-        push!(valid, allMove[2])
+        push!(valid, 0)
       end
       return valid
     end
