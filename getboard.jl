@@ -13,7 +13,7 @@ function getCurrentBoard(DB)
                 " " " " " " " " " " " " " " " " " ";
                 "p1" "p1" "p1" "p1" "p1" "p1" "p1" "p1" "p1";
                 " " "r1" " " " " " " " " " " "b1" " ";
-                "l1" "n1" "s1" "g1" "k1" "g1" "s1" "n1" "l1";]
+                "l1" "n1" "s1" "g1" "K1" "g1" "s1" "n1" "l1";]
   elseif board_type == "minishogi"
     global board = ["k0" "g0" "s0" "b0" "r0";
       "p0" " " " " " " " ";
