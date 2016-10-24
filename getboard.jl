@@ -29,7 +29,12 @@ function getCurrentBoard(DB)
     sourcey = SQLite.query(DB,"SELECT sourcey FROM moves WHERE \"move_number\" = $i;")[1].values[1]
     targetx = SQLite.query(DB,"SELECT targetx FROM moves WHERE \"move_number\" = $i;")[1].values[1]
     targety = SQLite.query(DB,"SELECT targety FROM moves WHERE \"move_number\" = $i;")[1].values[1]
-    option = string(SQLite.query(DB,"SELECT option FROM moves WHERE \"move_number\" = $i;")[1].values[1])
+    try
+      global option = string(SQLite.query(DB,"SELECT option FROM moves WHERE \"move_number\" = $i;")[1].values[1])
+    catch
+      global = "NULL"
+    end
+      
     if move_type == "move"
       if board[targetx,targety] != " "
         push!(died_token,lowercase(board[targetx,targety]))
