@@ -1,12 +1,25 @@
 using SQLite
 include("pieces.jl")
 using MCTS
-  #set up necessary variables
-filename = "testdb"
+global color = NaN
+global move_type = NaN
+global cheating = false
+global promotion = false
+global move_char = ""
+global source_x = NaN
+global source_y = NaN
+global c = 0
+global x = -1
+global y = -1
+global x_pro = -1
+global y_pro = -1
+global x_l = -1
+global y_l = -1
+global v_l=-1
+#set up necessary variables
+filename = "a"
 DB = SQLite.DB(filename)
 game_type = string(SQLite.query(DB,  "select * from meta where key == \"type\"")[2].values[1])
-
-game_type = game_type[10:findfirst(game_type, ')')-1]
 if game_type == "minishogi"
   size = 5
   promote_line = 1
@@ -16,15 +29,9 @@ else
   promote_line = 3
   table_type = 'S'
 end
-seed_temp = string(SQLite.query(DB,  "select * from meta where key == \"seed\"")[2].values[1])
 
-#seed = parse(Float64, seed_temp)
-srand(0)
-cheating = false
-color = NaN
 t = string(SQLite.query(DB,"SELECT COUNT(*) FROM moves")[1][1])
-println(t)
-move_num = parse(Int, t[17:findfirst(t, ')')-1])
+move_num = parse(Int, t[10:findfirst(t, ')')-1])
 if move_num%2 == 0
   color = 0
   color_opp = 1
@@ -33,19 +40,15 @@ else
   color_opp = 0
 end
 board, kills = getCurrentBoard(filename)
+
+board[5,1] = uppercase(board[5,1])
 #count for the pieces on the board
+
 self_count = MCTS.count_self(board, color, table_type)
 opp_count = MCTS.count_opp(board, color, table_type)
-c = 0
-x = -1
-y = -1
-source_x = NaN
-source_y = NaN
-move_type = NaN
-x_pro = -1
-y_pro = -1
-promotion = false
-move_char = ""
+
+#setup variables
+
 #choose a move type
 choose_move = rand(1:1000)
 if choose_move < 10
@@ -78,18 +81,16 @@ for i = 1:size
   end
 end
 
-if move_type == 'd'
-  #make the drop
+if move_type == 'd' #make the drop
   drop_weight = -1
   drop_char = ""
   for i = 1:length(kills)
-    w = get_weight_std(kills[i][1])
+    w = MCTS.get_weight_std(kills[i][1])
     if w > drop_weight
       drop_weight = w
-      drop_char = string(kills[i][1])*color
+      drop_char = string(kills[i][1])*string(color)
     end
   end
-
   for i = 1:size
     for j = 1:size
       if board[i,j] == " "
@@ -97,34 +98,29 @@ if move_type == 'd'
         if MCTS.check(board, k_x, k_y, color_opp)
           sql_move = "insert into moves(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
           sql_move *= " values ($(move_num+1),\"drop\", -1, -1, $(i), $(j), \"d\",  NULL)"
-          exit(0)
+          return
         else
           board[i,j] = " "
         end
       end
     end
   end
-elseif move_type == 'm'
-  #make the move
-  x_l = -1
-  y_l = -1
-  v_l=-1
+elseif move_type == 'm' #make the move
   for i = 1:size
     for j = 1:size
-      if board[i, j] != " " && board[i, j][2] == string(color)[1]
+      if board[i, j] == " "
+        continue
+      elseif board[i, j][2] == string(color)[1]
         move_char = board[i,j][1]
         global moves = MCTS.getAllMoves(board[i,j], board, i,j,color)
-        if moves == nothing
-          println(i, " ", j)
-        else
+        if moves != nothing
           for k = 1:2:length(moves)
             xtarget = i+moves[k]
             ytarget = j+moves[k+1]
             temp = board[xtarget, ytarget]
             board[xtarget, ytarget] = board[i,j]
             board[i,j] = " "
-            #if the move an check the opposite, do it
-            if MCTS.check(board, k_x,k_y,color_opp)
+            if MCTS.check(board, k_x,k_y,color_opp)#if the move an check the opposite, do it
               if xtarget <= promote_line
                 promotion = true
               else
@@ -142,9 +138,8 @@ elseif move_type == 'm'
               end
               stmt = SQLite.Stmt(DB, sql_move)
               SQLite.execute!(stmt)
-              exit(0)
-            #if the move cannot check but can kill a opposite char, save it for compare
-            else
+              return
+            else #if the move cannot check but can kill a opposite char, save it for compare
               if temp != " "
                 if isupper(temp[1])
                   v = MCTS.get_weight_pro(temp[1])
@@ -152,16 +147,16 @@ elseif move_type == 'm'
                   v = MCTS.get_weight_std(temp[1])
                 end
                 if v > v_l
-                  global v_l = v
-                  global x_l = xtarget
-                  global y_l = ytarget
-                  move_char = board[x_l,y_l]
+                  v_l = v
+                  x_l = xtarget
+                  y_l = ytarget
+                  move_char = board[xtarget, ytarget]
                 end
               elseif xtarget <= promote_line
                 x_pro = xtarget
                 y_pro = ytarget
-                global x = i
-                global y = j
+                x = i
+                y = j
                 move_char = board[xtarget, ytarget]
                 promotion = true
               end
@@ -189,5 +184,5 @@ elseif move_type == 'm'
   end
   stmt = SQLite.Stmt(DB, sql_move)
   SQLite.execute!(stmt)
-  exit(0)
+  return 
 end
