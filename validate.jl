@@ -26,14 +26,6 @@ end
 flag = true
 #replay game and trace every moves
 for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
-  try
-    global i_am_cheating = SQLite.query(DB,"SELECT i_am_cheating FROM moves WHERE \"move_number\" = $i;")[1].values[1]
-  catch
-    global i_am_cheating = nothing
-  end
-  if i_am_cheating != nothing && SQLite.query(DB,"SELECT value FROM meta WHERE \"key\" = \"legality\";")[1].values[1] == "cheating"
-    continue
-  end
   global turn = i % 2 == 0 ? "0" : "1"
   #update move_vars
   move_type = SQLite.query(DB,"SELECT move_type FROM moves WHERE \"move_number\" = $i;")[1].values[1]
@@ -62,6 +54,7 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
   catch
     global option = "NULL"
   end
+
   #validating depends on mvoe_type
   if move_type == "move"
     #token does not exist
