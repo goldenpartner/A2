@@ -140,8 +140,8 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
   elseif move_type == "drop"
     if option == "p"
       xzhou,yzhou = size(board)
-      for i = 1:xzhou
-        if board[i,targety] == option*turn
+      for j = 1:xzhou
+        if board[j,targety] == option*turn
           println(i," ")
           flag = false
           break
