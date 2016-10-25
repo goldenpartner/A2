@@ -67,7 +67,8 @@ function chess_game()
 
   #get each parameter
   move_number = 1
-  while (wingame(new_game)== "?")
+  DB = SQLite.DB(new_game)
+  while (wingame(DB)== "?")
     println("move_number : $move_number")
     if move_number%2 == side
       println("your turn:  ")
@@ -119,8 +120,7 @@ function chess_game()
     run(`julia --color=yes -- display.jl $new_game`)
     move_number = move_number+1
   end
-
-  if (wingame(new_game) == "B")
+  if (wingame(DB) == "B")
     if (side == 1)
       println(" YOU WIN! ")
     else
