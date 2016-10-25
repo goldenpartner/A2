@@ -65,17 +65,33 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
           break
     #cant promte in unpromoteble area
     elseif option == "!"
-      if turn == "0" #white
-        if targetx < 7
-          print(i," ")
-          flag = false
-          break
+      if board_type == "standard"
+        if turn == "0" #white
+          if targetx < 7
+            print(i," ")
+            flag = false
+            break
+          end
+        else
+          if targetx > 3
+            print(i," ")
+            flag = false
+            break
+          end
         end
       else
-        if targetx > 3
-          print(i," ")
-          flag = false
-          break
+        if turn == "0" #white
+          if targetx < 5
+            print(i," ")
+            flag = false
+            break
+          end
+        else
+          if targetx > 1
+            print(i," ")
+            flag = false
+            break
+          end
         end
       end
     end
@@ -87,8 +103,7 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
       if (targetx,targety) == check_valid
         check = true
         if board[targetx,targety] != " "
-          died_team = turn == "0" ? "1" : "0"
-          push!(died_token,string(board[targetx,targety][1])*died_team)
+          push!(died_token,string(board[targetx,targety][1])*turn)
         end
         board[targetx,targety] = board[sourcex,sourcey]
         board[sourcex,sourcey] = " "
