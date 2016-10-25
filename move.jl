@@ -84,6 +84,22 @@ end
 if move_type == 'd' #make the drop
   drop_weight = -1
   drop_char = ""
+  count = 0
+  #count how many pawns we have on the board
+  for i = 1:size
+    for j = 1:size
+      if board[i, j][1] == 'p'
+        count += 1
+      end
+    end
+  end
+  #decide if AI can drop a pawn somewhere
+  if count == size
+    drop_pawn = false
+  else
+    drop_pawn = true
+  end
+  #select a piece
   for i = 1:length(kills)
     w = MCTS.get_weight_std(kills[i][1])
     if w > drop_weight
@@ -91,21 +107,27 @@ if move_type == 'd' #make the drop
       drop_char = string(kills[i][1])*string(color)
     end
   end
-  for i = 1:size
-    for j = 1:size
-      if board[i,j] == " "
-        board[i,j] = drop_char
-        if MCTS.check(board, k_x, k_y, color_opp)
-          sql_move = "insert into moves(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
-          sql_move *= " values ($(move_num+1),\"drop\", -1, -1, $(i), $(j), \"d\",  NULL)"
-          return
-        else
-          board[i,j] = " "
+  #decide drop or choose to move instead
+  if drop_char == "p"*string(color) && !drop_pawn
+    move_type = 'm'
+  elseif (drop_char != "p"*string(color)) || (drop_char == "p"*string(color) && drop_pawn)
+    for i = 1:size
+      for j = 1:size
+        if board[i,j] == " "
+          board[i,j] = drop_char
+          if MCTS.check(board, k_x, k_y, color_opp)
+            sql_move = "insert into moves(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
+            sql_move *= " values ($(move_num+1),\"drop\", -1, -1, $(i), $(j), \"d\",  NULL)"
+            return
+          else
+            board[i,j] = " "
+          end
         end
       end
     end
   end
-elseif move_type == 'm' #make the move
+end
+if move_type == 'm' #make the move
   for i = 1:size
     for j = 1:size
       if board[i, j] == " "
@@ -126,7 +148,7 @@ elseif move_type == 'm' #make the move
               else
                 promotion = false
               end
-              sql_move = "insert into moves(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
+              sql_move = "insert into moves(move_number,move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
               if promotion && !cheating
                 sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), \'!\',  NULL)"
               elseif promotion && cheating
@@ -184,5 +206,5 @@ elseif move_type == 'm' #make the move
   end
   stmt = SQLite.Stmt(DB, sql_move)
   SQLite.execute!(stmt)
-  return 
+  return
 end
