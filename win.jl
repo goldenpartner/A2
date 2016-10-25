@@ -2,8 +2,9 @@ using SQLite
 
 DB = SQLite.DB(ARGS[1])
 move_number = length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
+board_type = SQLite.query(DB,"SELECT value FROM meta WHERE key = \"type\";")[1].values[1]
 flag = true
-kings = [(1,5),(9,5)]
+kings = board_type == "standard" ? [(1,5),(9,5)] : [(1,1),(5,5)]
 for i = 1 : move_number
   global turn = i % 2 == 0 ? "0" : "1"
 
