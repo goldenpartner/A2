@@ -73,7 +73,7 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
           break
     #cant promte in unpromoteble area
     elseif option == "!"
-      if board[sourcex,sourcey][1] == "k" ||board[sourcex,sourcey][1] == "g"
+      if board[sourcex,sourcey][1] == 'k' ||board[sourcex,sourcey][1] == 'g'
         print(i," ")
         flag = false
         break
