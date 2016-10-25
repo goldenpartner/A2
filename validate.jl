@@ -26,6 +26,14 @@ end
 flag = true
 #replay game and trace every moves
 for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
+  try
+    global i_am_cheating = SQLite.query(DB,"SELECT i_am_cheating FROM moves WHERE \"move_number\" = $i;")[1].values[1]
+  catch
+    global i_am_cheating = nothing
+  end
+  if i_am_cheating == nothing
+    continue
+  end
   global turn = i % 2 == 0 ? "0" : "1"
   #update move_vars
   move_type = SQLite.query(DB,"SELECT move_type FROM moves WHERE \"move_number\" = $i;")[1].values[1]
@@ -73,7 +81,7 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
           break
     #cant promte in unpromoteble area
     elseif option == "!"
-      if board[sourcex,sourcey][1] == 'k' ||board[sourcex,sourcey][1] == 'g'
+      if board[sourcex,sourcey][1] == "k" ||board[sourcex,sourcey][1] == "g"
         print(i," ")
         flag = false
         break
@@ -130,6 +138,32 @@ for i = 1:length(SQLite.query(DB,"SELECT move_number FROM moves;")[1])
       break
     end
   elseif move_type == "drop"
+    if option == "p"
+      xzhou,yzhou = size(board)
+      for i = 1:xzhou
+        if board[i,targety] == option*turn
+          println(i," ")
+          flag = false
+          break
+        end
+      end
+    end
+    if option == "n"
+      if turn == "0" #white
+        if targetx > 7
+          print(i," ")
+          flag = false
+          break
+        end
+      else
+        if targetx < 3
+          print(i," ")
+          flag = false
+          break
+        end
+      end
+    end
+
     index = 0
     #find index
     for k = 1:length(died_token)
