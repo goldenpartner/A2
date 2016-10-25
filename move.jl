@@ -30,8 +30,8 @@ else
   table_type = 'S'
 end
 
-t = string(SQLite.query(DB,"SELECT COUNT(*) FROM moves")[1][1])
-move_num = parse(Int, t[10:findfirst(t, ')')-1])
+move_num = SQLite.query(DB,"SELECT COUNT(*) FROM moves")[1].values[1]
+println(typeof(move_num))
 if move_num%2 == 0
   color = 0
   color_opp = 1
@@ -59,8 +59,9 @@ choose_move = rand(1:1000)
 if choose_move < 10
   println("Computer resigned! The other player wins!")
   println("Press enter to exit")
-  readline()
-  exit(0)
+  sql_move = "insert into moves(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
+  sql_move *= " values ($(move_num+1),\"resign\", -1, -1, -1, -1, NULL,  NULL)"
+  return
   move_type = 'd'
   source_x = -1
   source_y = -1
@@ -117,14 +118,8 @@ if move_type == 'd' #make the drop
     move_type = 'm'
   elseif (drop_char != "p"*string(color)) || (drop_char == "p"*string(color) && drop_pawn)
     for i = 1:size
-      if i < 3 && drop_char == "n"*string(color) && color == 1
-        continue
-      elseif i > 6 && drop_char == "n"*string(color) && color == 0
-        continue
-      end
       for j = 1:size
         if board[i,j] == " "
-
           board[i,j] = drop_char
           if MCTS.check(board, k_x, k_y, color_opp)
             sql_move = "insert into moves(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
@@ -205,6 +200,7 @@ if move_type == 'm' #make the move
     x_l = x_pro
     y_l = y_pro
   end
+  println(x,y,x_l,y_l)
   sql_move = "insert into moves(move_number,move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
   if promotion && !cheating
     sql_move *= " values ($(move_num+1),\"move\", $(x), $(y), $(x_l), $(y_l), \'!\',  NULL)"
