@@ -17,7 +17,7 @@ global x_l = -1
 global y_l = -1
 global v_l=-1
 #set up necessary variables
-filename = "a"
+filename = ARGS[1]
 DB = SQLite.DB(filename)
 game_type = string(SQLite.query(DB,  "select * from meta where key == \"type\"")[2].values[1])
 if game_type == "minishogi"
