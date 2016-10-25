@@ -35,6 +35,11 @@ move_num = parse(Int, t[10:findfirst(t, ')')-1])
 if move_num%2 == 0
   color = 0
   color_opp = 1
+  if promote_line == 1
+    promote_line = 5
+  else
+    promote_line = 7
+  end
 else
   color = 1
   color_opp = 0
@@ -112,8 +117,14 @@ if move_type == 'd' #make the drop
     move_type = 'm'
   elseif (drop_char != "p"*string(color)) || (drop_char == "p"*string(color) && drop_pawn)
     for i = 1:size
+      if i < 3 && drop_char == "n"*string(color) && color == 1
+        continue
+      elseif i > 6 && drop_char == "n"*string(color) && color == 0
+        continue
+      end
       for j = 1:size
         if board[i,j] == " "
+
           board[i,j] = drop_char
           if MCTS.check(board, k_x, k_y, color_opp)
             sql_move = "insert into moves(move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
