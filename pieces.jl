@@ -593,10 +593,10 @@ module MCTS
     return count
   end
   function count_opp(table, color, table_type)
-    if color == '1'
-      return count_self(table, '0', table_type)
+    if color == 1
+      return count_self(table, 0, table_type)
     else
-      return count_self(table, '1', table_type)
+      return count_self(table, 1, table_type)
     end
   end
 
