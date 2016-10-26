@@ -30,30 +30,29 @@ module MCTS
       end
       return valid
     end
-
-    function check(board, x, y, color)
-      if color == 1
-        color_opp = 0
-        k = ()
-      else
-        color_opp = 1
-      end
-      for i = 1:size(board)[1]
-        for j = 1:size(board)[2]
-          if board[i,j] != " " && board[i,j][2] == '1'
-            color = 1
-            moves = getAllMoves(board[i,j][1], board, i,j,color_opp)
-            for k = 1:2:length(moves)
-              target_index = (i+moves[k], j+moves[k+1])
-              if target_index == (x, y)
-                return true
-              end
+  end
+  function check(board, x, y, color)
+    if color == 1
+      color_opp = 0
+      k = ()
+    else
+      color_opp = 1
+    end
+    for i = 1:size(board)[1]
+      for j = 1:size(board)[2]
+        if board[i,j] != " " && board[i,j][2] == '1'
+          color = 1
+          moves = getAllMoves(board[i,j][1], board, i,j,color_opp)
+          for k = 1:2:length(moves)
+            target_index = (i+moves[k], j+moves[k+1])
+            if target_index == (x, y)
+              return true
             end
           end
         end
       end
-      return false
     end
+    return false
   end
   module rook
     allMove = [1 0 -1 0 0 1 0 -1]
