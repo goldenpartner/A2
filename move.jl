@@ -173,7 +173,7 @@ function move(ARGS)
                   stmt = SQLite.Stmt(DB, sql_move)
                   SQLite.execute!(stmt)
                   return
-                elseif xtarget <= promote_line
+                elseif (xtarget <= promote_line && promote_line <= 3) || (xtarget >= promote_line && promote_line >= 5)
                   promotion = true
                   sql_move = "insert into moves(move_number,move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
                   if promotion && !cheating
@@ -188,22 +188,23 @@ function move(ARGS)
                   stmt = SQLite.Stmt(DB, sql_move)
                   SQLite.execute!(stmt)
                   return
-                end
-                board[i,j] = board[xtarget,ytarget]
-                board[xtarget,ytarget] = temp
-                sql_move = "insert into moves(move_number,move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
-                if promotion && !cheating
-                  sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), \'!\',  NULL)"
-                elseif promotion && cheating
-                  sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), \'!\',  1)"
-                elseif !promotion && cheating
-                  sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), NULL,  1)"
                 else
-                  sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), NULL,  NULL)"
+                  board[i,j] = board[xtarget,ytarget]
+                  board[xtarget,ytarget] = temp
+                  sql_move = "insert into moves(move_number,move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
+                  if promotion && !cheating
+                    sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), \'!\',  NULL)"
+                  elseif promotion && cheating
+                    sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), \'!\',  1)"
+                  elseif !promotion && cheating
+                    sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), NULL,  1)"
+                  else
+                    sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), NULL,  NULL)"
+                  end
+                  stmt = SQLite.Stmt(DB, sql_move)
+                  SQLite.execute!(stmt)
+                  return
                 end
-                stmt = SQLite.Stmt(DB, sql_move)
-                SQLite.execute!(stmt)
-                return
               end
             end
           end
@@ -212,5 +213,21 @@ function move(ARGS)
     end
   end
   println(x,y,x_l,y_l)
+  i,j=x,y
+  xtarget,ytarget = x_l,y_l
+  move_char = board[i,j]
+  sql_move = "insert into moves(move_number,move_type, sourcex, sourcey, targetx, targety, option, i_am_cheating)"
+  if promotion && !cheating
+    sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), \'!\',  NULL)"
+  elseif promotion && cheating
+    sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), \'!\',  1)"
+  elseif !promotion && cheating
+    sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), NULL,  1)"
+  else
+    sql_move *= " values ($(move_num+1),\"move\", $(i), $(j), $(xtarget), $(ytarget), NULL,  NULL)"
+  end
+  stmt = SQLite.Stmt(DB, sql_move)
+  SQLite.execute!(stmt)
+  return
 end
 move(ARGS)
