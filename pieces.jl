@@ -40,7 +40,7 @@ module MCTS
     end
     for i = 1:size(board)[1]
       for j = 1:size(board)[2]
-        if board[i,j] != " " && board[i,j][2] == '1'
+        if board[i,j] != " " && board[i,j][2] == string(color_opp)[1]
           color = 1
           moves = getAllMoves(board[i,j][1], board, i,j,color_opp)
           for k = 1:2:length(moves)
@@ -63,7 +63,7 @@ module MCTS
     end
     for i = 1:size(board)[1]
         for j = 1:size(board)[2]
-          if board[i,j] != " " && board[i,j][2] == string(color)[1]
+          if board[i,j] != " " && board[i,j][2] == string(color_opp)[1]
             color = 1
             moves = getAllMoves(board[i,j][1], board, i,j,color_opp)
             for k = 1:2:length(moves)
