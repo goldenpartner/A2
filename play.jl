@@ -115,7 +115,7 @@ function chess_game()
     else
       println("AI is moving : ")
       sleep(1)
-      #run(`julia move.jl $new_game`)
+      run(`julia move.jl $new_game`)
     end
     run(`julia --color=yes -- display.jl $new_game`)
     move_number = move_number+1
