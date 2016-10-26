@@ -574,7 +574,6 @@ module MCTS
   end
 
   function count_self(table, color, table_type)
-    println(table)
     count = 0
     if table_type == 'S'
       size = 9
